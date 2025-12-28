@@ -249,6 +249,38 @@ const LoveGallery = () => {
 
     const [selectedPhoto, setSelectedPhoto] = useState(null);
     const [title, setTitle] = useState("Our Story");
+    
+    // Infinite Scroll State for Masonry View
+    const [visibleCount, setVisibleCount] = useState(20);
+    const observerTarget = React.useRef(null);
+
+    useEffect(() => {
+        if (viewMode !== 'masonry') return;
+
+        const observer = new IntersectionObserver(
+            entries => {
+                if (entries[0].isIntersecting) {
+                    setVisibleCount(prev => Math.min(prev + 20, photos.length));
+                }
+            },
+            { threshold: 0.1 }
+        );
+
+        if (observerTarget.current) {
+            observer.observe(observerTarget.current);
+        }
+
+        return () => {
+            if (observerTarget.current) {
+                observer.unobserve(observerTarget.current);
+            }
+        };
+    }, [viewMode, photos.length]);
+
+    // Reset visible count when photos change or view mode changes
+    useEffect(() => {
+        setVisibleCount(20);
+    }, [viewMode, photos.length]);
 
     const breakpointColumnsObj = {
         default: 3,
@@ -519,12 +551,13 @@ const LoveGallery = () => {
                         onClose={handleClose} 
                     />
                 ) : viewMode === 'masonry' ? (
+                    <>
                     <Masonry
                         breakpointCols={breakpointColumnsObj}
                         className="flex w-auto -ml-4"
                         columnClassName="pl-4 bg-clip-padding"
                     >
-                        {photos.map((photo, index) => (
+                        {photos.slice(0, visibleCount).map((photo, index) => (
                             <motion.div
                                 key={photo.id}
                                 initial={{ opacity: 0, y: 20 }}
@@ -550,6 +583,13 @@ const LoveGallery = () => {
                             </motion.div>
                         ))}
                     </Masonry>
+                    {/* Sentinel for Infinite Scroll */}
+                    {visibleCount < photos.length && (
+                        <div ref={observerTarget} className="h-20 w-full flex items-center justify-center text-gray-500">
+                            Loading more memories...
+                        </div>
+                    )}
+                    </>
                 ) : (
                     // Photo Wall View (Corkboard Style)
                     <div className="relative mx-auto max-w-6xl mt-8 p-4">
