@@ -55,6 +55,16 @@ const AircraftWarGame = () => {
     const requestRef = useRef();
 
     useEffect(() => {
+        const handlePKey = (e) => {
+             if (e.key === 'p' || e.key === 'P') {
+                 setGameState(prev => prev === 'playing' ? 'paused' : (prev === 'paused' ? 'playing' : prev));
+             }
+        };
+        window.addEventListener('keydown', handlePKey);
+        return () => window.removeEventListener('keydown', handlePKey);
+    }, []);
+
+    useEffect(() => {
         window.addEventListener('keydown', handleKeyDown);
         window.addEventListener('keyup', handleKeyUp);
         return () => {
@@ -74,8 +84,10 @@ const AircraftWarGame = () => {
 
     const handleKeyDown = (e) => {
         gameRef.current.keys[e.key] = true;
-        if (e.code === 'Space') {
-            fireBullet();
+        // Manual fire is still supported, but auto-fire in loop handles continuous
+        if (e.code === 'Space' && !gameRef.current.keys['Space_held']) {
+             fireBullet();
+             gameRef.current.keys['Space_held'] = true;
         }
         if (e.key === 'z' || e.key === 'Z') useNirvanaZ();
         if (e.key === 'x' || e.key === 'X') useNirvanaX();
@@ -83,6 +95,7 @@ const AircraftWarGame = () => {
 
     const handleKeyUp = (e) => {
         gameRef.current.keys[e.key] = false;
+        if (e.code === 'Space') gameRef.current.keys['Space_held'] = false;
     };
 
     const initGame = () => {
@@ -281,28 +294,43 @@ const AircraftWarGame = () => {
         // Meteorites
         // Re-populating if needed
         let currentCount = 0;
+        // Optimization: Don't scan the whole grid every time, maintain a counter or just trust probability
+        // Scanning is safer for now but lets fix the bounds
         for(let i=7; i<46; i++) for(let j=6; j<24; j++) if(g.grid[i][j] === 3) currentCount++;
         
-        while(currentCount < g.spawnRates.e1) {
+        // Always try to spawn if below cap, but with a per-frame chance to avoid instant flooding
+        if(currentCount < g.spawnRates.e1 && Math.random() < 0.1) {
             const x = Math.floor(Math.random() * 39) + 7;
-            const y = Math.floor(Math.random() * 2) + 6;
+            const y = Math.floor(Math.random() * 2) + 6; // Spawn at top area
             if(g.grid[x][y] === 0) {
                 g.grid[x][y] = 3;
-                currentCount++;
-            } else {
-                break; // avoid infinite loop
             }
         }
     };
 
     const spawnEnemy2 = (g) => {
-        // Small planes
-        let currentCount = 0; // Simplified counting
-        // In real port, we'd track objects, but grid scan is okay for now
-        // Or just trust the loop updates
+        // Small planes (Type 4) - Basic chasers
+        let currentCount = 0;
+        for(let i=7; i<46; i++) for(let j=6; j<24; j++) if(g.grid[i][j] === 4) currentCount++;
+
+        if (currentCount < g.spawnRates.e2 && Math.random() < 0.02) {
+             const x = Math.floor(Math.random() * 39) + 7;
+             const y = 6; 
+             if(g.grid[x][y] === 0) g.grid[x][y] = 4;
+        }
     };
     
-    const spawnEnemy3 = (g) => {};
+    const spawnEnemy3 = (g) => {
+         // Big planes (Type 5) - Slower but tougher?
+         let currentCount = 0;
+         for(let i=7; i<46; i++) for(let j=6; j<24; j++) if(g.grid[i][j] === 5) currentCount++;
+ 
+         if (currentCount < g.spawnRates.e3 && Math.random() < 0.01) {
+              const x = Math.floor(Math.random() * 39) + 7;
+              const y = 6; 
+              if(g.grid[x][y] === 0) g.grid[x][y] = 5;
+         }
+    };
 
     // --- Boss Logic (Simplified) ---
     const initBoss1 = (g) => {
@@ -311,7 +339,7 @@ const AircraftWarGame = () => {
         // Actually, the C code draws it into the grid as 6.
         drawBoss1(g, g.boss.x, g.boss.y);
         setLife(51);
-        setMessage("The FIRST BOSS is coming!!!");
+        setMessage("BOSS WARNING: MOTHERSHIP INCOMING!");
     };
 
     const drawBoss1 = (g, x, y) => {
@@ -329,15 +357,56 @@ const AircraftWarGame = () => {
          for(let i=x-2; i<=x+2; i++) g.grid[i][y-2] = 0;
     };
 
+    // --- Improved Controls ---
+    // Instead of direct grid updates, we'll use a continuous movement loop with velocity
+    // but sticking to the grid-based nature for now to preserve core logic, 
+    // just smoothing the input handling.
+    
+    // We already have handleKeyDown/Up updating a keys object.
+    // In gameLoop, we check keys and move.
+    // To make it smoother, we can increase frame rate or update position more frequently.
+    // Currently gameLoop uses requestAnimationFrame.
+    
+    // Let's refine the movement speed.
+    // We can add a move delay to prevent 'too fast' movement on 60fps
+    
+    // Add movement cooldown to gameRef
+    // g.moveCooldown = 0;
+    
     const gameLoop = () => {
         const g = gameRef.current;
+        if (gameState !== 'playing') return; // Double check state
+        
         const keys = g.keys;
 
-        // Player Movement
-        if (keys['ArrowUp'] || keys['w'] || keys['W']) movePlane(0, -1);
-        if (keys['ArrowDown'] || keys['s'] || keys['S']) movePlane(0, 1);
-        if (keys['ArrowLeft'] || keys['a'] || keys['A']) movePlane(-1, 0);
-        if (keys['ArrowRight'] || keys['d'] || keys['D']) movePlane(1, 0);
+        // Player Movement with Cooldown for smoother but controlled speed
+        if (!g.moveCooldown) g.moveCooldown = 0;
+        
+        if (g.moveCooldown <= 0) {
+            let moved = false;
+            // Allow diagonal movement
+            let dx = 0;
+            let dy = 0;
+            
+            if (keys['ArrowUp'] || keys['w'] || keys['W']) dy = -1;
+            if (keys['ArrowDown'] || keys['s'] || keys['S']) dy = 1;
+            if (keys['ArrowLeft'] || keys['a'] || keys['A']) dx = -1;
+            if (keys['ArrowRight'] || keys['d'] || keys['D']) dx = 1;
+            
+            if (dx !== 0 || dy !== 0) {
+                movePlane(dx, dy);
+                moved = true;
+            }
+            
+            if (moved) g.moveCooldown = 2; // Move every 2 frames (~30fps effective speed)
+        } else {
+            g.moveCooldown--;
+        }
+
+        // Auto-fire if space is held (for better playability)
+        if (keys[' '] || keys['Space']) {
+             if (g.frameCount % 5 === 0) fireBullet();
+        }
 
         // Update Game Logic
         g.frameCount++;
@@ -360,7 +429,8 @@ const AircraftWarGame = () => {
         if (g.boss.active) updateBoss(g);
 
         // Score Items
-        if (g.frameCount % 100 === 0) {
+        // Drastically reduced spawn rate from 100 to 500 frames (~8 seconds)
+        if (g.frameCount % 500 === 0) {
             spawnItem(g);
         }
 
@@ -422,27 +492,42 @@ const AircraftWarGame = () => {
     };
 
     const updateEnemies = (g) => {
-        // Move Meteors (3) down
+        // Generic enemy mover (scans grid and moves types 3, 4, 5 down)
         // Scan bottom to top
         for(let j=23; j>=6; j--) {
             for(let i=7; i<46; i++) {
-                if (g.grid[i][j] === 3) {
+                const val = g.grid[i][j];
+                if (val >= 3 && val <= 5) { // 3: Meteor, 4: Enemy1, 5: Enemy2
                     g.grid[i][j] = 0;
-                    if (j+1 < 24) {
-                        // Check player collision
-                        if (g.grid[i][j+1] === 1) gameOver();
-                        else g.grid[i][j+1] = 3;
-                    } else {
-                        // Respawn at top
-                        const nx = Math.floor(Math.random() * 39) + 7;
-                        g.grid[nx][6] = 3;
+                    
+                    // Move logic
+                    // Meteors (3) just fall straight
+                    // Enemies (4,5) could track player? For now just fall straight + wobble
+                    
+                    let nextX = i;
+                    let nextY = j + 1;
+                    
+                    if (val === 4 && Math.random() < 0.3) {
+                         // Wobble
+                         nextX += Math.random() < 0.5 ? -1 : 1;
+                         if(nextX < 7) nextX = 7;
+                         if(nextX > 45) nextX = 45;
                     }
+
+                    if (nextY < 24) {
+                        // Check player collision
+                        if (g.grid[nextX][nextY] === 1) gameOver();
+                        else if (g.grid[nextX][nextY] === 0) g.grid[nextX][nextY] = val;
+                        // Else blocked, stay put or vanish? Vanish for now to avoid stacking
+                    } 
                 }
             }
         }
         
-        // Spawn/Replenish Meteors
+        // Spawn/Replenish
         spawnEnemy1(g);
+        spawnEnemy2(g);
+        spawnEnemy3(g);
     };
     
     const updateBoss = (g) => {
@@ -485,6 +570,8 @@ const AircraftWarGame = () => {
 
     const gameOver = () => {
         setGameState('gameover');
+        // Clear all intervals/frames
+        cancelAnimationFrame(requestRef.current);
     };
 
     const draw = () => {
@@ -564,45 +651,76 @@ const AircraftWarGame = () => {
                     height={500} 
                     className="bg-black rounded border border-gray-600 shadow-[0_0_15px_rgba(0,255,0,0.2)]"
                 />
+
+                {gameState === 'playing' && (
+                    <button 
+                        onClick={() => setGameState('paused')}
+                        className="absolute top-4 right-4 p-3 bg-yellow-600/20 hover:bg-yellow-600/40 rounded-full border border-yellow-500/30 transition-all text-yellow-400 z-10"
+                        title="Pause Game (P)"
+                    >
+                        <Pause size={24} />
+                    </button>
+                )}
                 
-                {gameState !== 'playing' && (
-                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/70 text-white">
-                        {gameState === 'gameover' && <h2 className="text-4xl text-red-500 font-bold mb-4">GAME OVER</h2>}
-                        {gameState === 'start' && <h2 className="text-4xl text-green-500 font-bold mb-4">AIRCRAFT WAR</h2>}
+                {/* Pause / Restart Overlay */}
+                {(gameState !== 'playing') && (
+                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/80 text-white z-10 backdrop-blur-sm">
+                        {gameState === 'gameover' && <h2 className="text-5xl text-red-500 font-bold mb-2 animate-bounce">GAME OVER</h2>}
+                        {gameState === 'gameover' && <div className="text-2xl text-yellow-400 mb-8 font-mono">FINAL SCORE: {score}</div>}
                         
-                        <button 
-                            onClick={initGame}
-                            className="flex items-center gap-2 px-6 py-3 bg-green-600 hover:bg-green-500 rounded-full font-bold transition-all"
-                        >
-                            {gameState === 'start' ? <Play size={20}/> : <RotateCcw size={20}/>}
-                            {gameState === 'start' ? 'START GAME' : 'RESTART'}
-                        </button>
+                        {gameState === 'start' && (
+                            <div className="text-center mb-8">
+                                <h2 className="text-5xl text-green-500 font-bold mb-2 tracking-wider">AIRCRAFT WAR</h2>
+                                <p className="text-cyan-400 font-mono tracking-widest">REACT EDITION</p>
+                            </div>
+                        )}
                         
-                        <div className="mt-8 p-6 bg-white/10 rounded-xl backdrop-blur-sm max-w-md w-full">
-                            <h3 className="text-xl font-bold text-yellow-400 mb-4 border-b border-white/20 pb-2">Mission Control</h3>
+                        {gameState === 'paused' && <h2 className="text-4xl text-yellow-400 font-bold mb-8">PAUSED</h2>}
+                        
+                        <div className="flex gap-4">
+                            <button 
+                                onClick={initGame}
+                                className="flex items-center gap-2 px-8 py-4 bg-green-600 hover:bg-green-500 rounded-full font-bold text-lg transition-all shadow-[0_0_20px_rgba(34,197,94,0.4)] hover:scale-105 active:scale-95"
+                            >
+                                {gameState === 'start' ? <Play size={24}/> : <RotateCcw size={24}/>}
+                                {gameState === 'start' ? 'START MISSION' : 'RESTART MISSION'}
+                            </button>
                             
-                            <div className="grid grid-cols-2 gap-4 text-sm text-gray-300 text-left font-mono">
-                                <div className="space-y-2">
-                                    <div className="font-bold text-white mb-1">CONTROLS</div>
-                                    <div><span className="text-green-400">WASD / Arrows</span> : Move</div>
-                                    <div><span className="text-green-400">SPACE</span> : Shoot</div>
-                                    <div><span className="text-green-400">Z</span> : Missile Barrage</div>
-                                    <div><span className="text-green-400">X</span> : Clear Screen</div>
+                            {gameState === 'playing' && (
+                                <button 
+                                    onClick={() => setGameState('paused')}
+                                    className="p-4 bg-yellow-600/20 hover:bg-yellow-600/40 rounded-full border border-yellow-500/30 transition-all hidden"
+                                >
+                                    <Pause size={24} />
+                                </button>
+                            )}
+                        </div>
+                        
+                        {gameState === 'start' && (
+                        <div className="mt-12 p-6 bg-white/5 rounded-2xl border border-white/10 max-w-md w-full">
+                            <h3 className="text-xl font-bold text-yellow-400 mb-4 border-b border-white/10 pb-2 flex justify-between">
+                                <span>MISSION BRIEFING</span>
+                                <span className="text-xs font-normal text-gray-500 self-end">TOP SECRET</span>
+                            </h3>
+                            
+                            <div className="grid grid-cols-2 gap-6 text-sm text-gray-300 text-left font-mono">
+                                <div className="space-y-3">
+                                    <div className="font-bold text-white mb-1 border-b border-green-500/30 inline-block">CONTROLS</div>
+                                    <div className="flex justify-between"><span>MOVE</span> <span className="text-green-400">WASD / ↑↓←→</span></div>
+                                    <div className="flex justify-between"><span>SHOOT</span> <span className="text-green-400">SPACE (Hold)</span></div>
+                                    <div className="flex justify-between"><span>MISSILE</span> <span className="text-green-400">Z Key</span></div>
+                                    <div className="flex justify-between"><span>BOMB</span> <span className="text-green-400">X Key</span></div>
                                 </div>
                                 
-                                <div className="space-y-2">
-                                    <div className="font-bold text-white mb-1">LEGEND</div>
-                                    <div><span className="text-gray-400">$</span> : Meteor (Avoid!)</div>
-                                    <div><span className="text-cyan-400">UP</span> : Upgrade Weapon</div>
-                                    <div><span className="text-cyan-400">ST</span> : Freeze Enemies</div>
-                                    <div><span className="text-red-500">W</span> : Boss Enemy</div>
+                                <div className="space-y-3">
+                                    <div className="font-bold text-white mb-1 border-b border-cyan-500/30 inline-block">INTEL</div>
+                                    <div className="flex items-center gap-2"><span className="text-gray-400">$</span> <span>Meteor</span></div>
+                                    <div className="flex items-center gap-2"><span className="text-red-500">W</span> <span>Boss Ship</span></div>
+                                    <div className="flex items-center gap-2"><span className="text-cyan-400">UP</span> <span>Weapon +</span></div>
                                 </div>
                             </div>
-                            
-                            <div className="mt-4 text-xs text-gray-500 italic border-t border-white/10 pt-2">
-                                Tip: Defeat bosses to clear rounds. Collect items to survive!
-                            </div>
                         </div>
+                        )}
                     </div>
                 )}
                 

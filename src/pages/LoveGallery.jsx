@@ -1,16 +1,183 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Masonry from 'react-masonry-css';
-import { Heart, Upload, X, Camera, Grid, Layout, MapPin, Calendar, Save } from 'lucide-react';
+import { Heart, Upload, X, Camera, Grid, Layout, MapPin, Calendar, Save, MessageSquare, Quote, Minus, Square, HeartHandshake } from 'lucide-react';
 import { fileToBase64 } from '../utils/fileHelpers';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import galleryDataJSON from '../data/galleryData.json';
 import { IS_EDIT_MODE, USE_RANDOM_DATA_IF_EMPTY } from '../config';
+import { parseMessages } from '../utils/messageParser';
+import messageText from '../other/wechat_message.txt?raw';
 
 const LoveGallery = () => {
-    // Default to 'wall' view in View Mode, can start with 'masonry' if preferred but Wall is the main feature
+    // Default to 'wall' view in View Mode
     const [viewMode, setViewMode] = useState('wall'); 
+    const [messages, setMessages] = useState([]);
+    const [messagePositions, setMessagePositions] = useState([]);
+
+    // Generate random scattered positions
+    const randomizePositions = (msgs) => {
+        return msgs.map(msg => ({
+            ...msg,
+            x: Math.random() * 80, // 0-80%
+            y: Math.random() * 60, // 0-60%
+            zIndex: Math.floor(Math.random() * 10)
+        }));
+    };
+
+    // Generate Heart Positions (Extracted for reuse)
+    const generateHeartShape = (count) => {
+        const positions = [];
+        const numCandidates = 30; // Increased to find better spots
+
+        // Heart boundary function
+        const isInsideHeart = (x, y) => {
+            y = y - 0.1;
+            x = x * 1.2; 
+            const a = x * x + y * y - 1;
+            return a * a * a - x * x * y * y * y <= 0;
+        };
+
+        for (let i = 0; i < count; i++) {
+            let bestCandidate = null;
+            let maxDist = -1;
+
+            for (let j = 0; j < numCandidates; j++) {
+                let x, y, inside = false;
+                for(let k=0; k<20; k++) {
+                    x = (Math.random() * 4) - 2; 
+                    y = (Math.random() * 4) - 2; 
+                    if(isInsideHeart(x, -y)) { 
+                        inside = true;
+                        break;
+                    }
+                }
+                
+                if (!inside) continue; 
+
+                let minDist = Number.MAX_VALUE;
+                if (positions.length === 0) {
+                    minDist = Number.MAX_VALUE;
+                } else {
+                    for (const p of positions) {
+                        const d = Math.hypot(x - p.x, y - p.y);
+                        if (d < minDist) minDist = d;
+                    }
+                }
+
+                if (minDist > maxDist) {
+                    maxDist = minDist;
+                    bestCandidate = { x, y };
+                }
+            }
+            if (bestCandidate) positions.push(bestCandidate);
+            else positions.push({ x: 0, y: 0 });
+        }
+        return positions;
+    };
+
+    const applyDoubleHeartLayout = (currentMessages) => {
+        // Split messages
+        const meMsgs = currentMessages.filter(m => m.sender === 'Rayest');
+        const youMsgs = currentMessages.filter(m => m.sender !== 'Rayest');
+
+        // Generate relative positions
+        const mePositions = generateHeartShape(meMsgs.length);
+        const youPositions = generateHeartShape(youMsgs.length);
+
+        // Map to screen coordinates
+        // Left Heart (Me): Center ~ 25%, 50%
+        // Right Heart (You): Center ~ 75%, 50%
+        // Scale: ~12% per unit (fit within 0-50%)
+        const scale = 12;
+        
+        const newMeMsgs = meMsgs.map((msg, i) => ({
+            ...msg,
+            x: 20 + (mePositions[i].x * scale), // Center X at 20%
+            y: 40 + (mePositions[i].y * scale), // Center Y at 40%
+            zIndex: i
+        }));
+
+        const newYouMsgs = youMsgs.map((msg, i) => ({
+            ...msg,
+            x: 70 + (youPositions[i].x * scale), // Center X at 70%
+            y: 40 + (youPositions[i].y * scale), // Center Y at 40%
+            zIndex: i
+        }));
+
+        setMessages([...newMeMsgs, ...newYouMsgs]);
+    };
+
+    const applySingleHeartLayout = (currentMessages, senderFilter = null) => {
+        // Filter messages if sender is specified
+        const msgsToDisplay = senderFilter 
+            ? currentMessages.filter(m => senderFilter === 'Rayest' ? m.sender === 'Rayest' : m.sender !== 'Rayest')
+            : currentMessages;
+
+        // Generate positions for ALL messages together
+        const positions = generateHeartShape(msgsToDisplay.length);
+        
+        // Center Heart: Center ~ 50%, 50%
+        // Increase Scale further to spread them out
+        // Previous: 25 -> New: 35 (Even larger heart)
+        const scale = 35;
+        
+        // Adjust center slightly left as requested
+        // Previous CenterX: 45 -> New CenterX: 40
+        const newMsgs = msgsToDisplay.map((msg, i) => ({
+            ...msg,
+            x: 40 + (positions[i].x * scale), // Center X at 40%
+            y: 50 + (positions[i].y * scale), // Center Y at 50%
+            zIndex: i
+        }));
+        
+        setMessages(newMsgs);
+    };
+
+    const applyMixedHeartLayout = (currentMessages) => {
+        // Generate positions for ALL messages together
+        const positions = generateHeartShape(currentMessages.length);
+        
+        // Center Heart: Center ~ 50%, 50%
+        // Scale: ~35% per unit (match single heart size)
+        const scale = 35;
+        
+        // Use adjusted center X to match single heart
+        const newMsgs = currentMessages.map((msg, i) => ({
+            ...msg,
+            x: 40 + (positions[i].x * scale), // Center X at 40%
+            y: 50 + (positions[i].y * scale), // Center Y at 50%
+            zIndex: i
+        }));
+        
+        setMessages(newMsgs);
+    };
+
+    useEffect(() => {
+        const parsed = parseMessages(messageText);
+        // Take a random subset or first N to avoid performance issues if there are thousands
+        // For the visual effect, let's take up to 100 random messages
+        const shuffled = [...parsed].sort(() => 0.5 - Math.random());
+        const selected = shuffled.slice(0, 80);
+        
+        // Initial Layout (Mixed Heart by default now)
+        applyMixedHeartLayout(selected);
+    }, []);
+
+    const bringToFront = (id) => {
+        setMessages(prev => {
+            const maxZ = Math.max(...prev.map(m => m.zIndex || 0));
+            return prev.map(m => 
+                m.id === id ? { ...m, zIndex: maxZ + 1 } : m
+            );
+        });
+    };
+
+    const handleClose = (id) => {
+        setMessages(prev => prev.filter(msg => msg.id !== id));
+    };
+
     
     // Generate 100 dummy photos for the romantic gallery (Fallback)
     const generatePhotos = (count) => {
@@ -31,7 +198,10 @@ const LoveGallery = () => {
         if (galleryDataJSON && galleryDataJSON.length > 0) {
             return galleryDataJSON.map(p => ({
                 ...p,
-                date: p.date ? new Date(p.date) : new Date() // Rehydrate dates
+                date: p.date ? new Date(p.date) : new Date(), // Rehydrate dates
+                // Add thumbnail path (derived from src)
+                // Assuming thumbnails are in /gallery_images/thumbnails/filename.jpg
+                thumbnail: p.src.replace('/gallery_images/', '/gallery_images/thumbnails/')
             }));
         }
         if (USE_RANDOM_DATA_IF_EMPTY) {
@@ -42,6 +212,19 @@ const LoveGallery = () => {
 
     const [photos, setPhotos] = useState(initializePhotos());
     const [photoCount, setPhotoCount] = useState(photos.length); 
+
+    // Sync state with imported data when it changes (HMR or subsequent loads)
+    useEffect(() => {
+        if (galleryDataJSON && galleryDataJSON.length > 0) {
+            const loadedPhotos = galleryDataJSON.map(p => ({
+                ...p,
+                date: p.date ? new Date(p.date) : new Date(),
+                thumbnail: p.src.replace('/gallery_images/', '/gallery_images/thumbnails/')
+            }));
+            setPhotos(loadedPhotos);
+            setPhotoCount(loadedPhotos.length);
+        }
+    }, [galleryDataJSON]);
     
     // Save function
     const saveGallery = async () => {
@@ -102,20 +285,15 @@ const LoveGallery = () => {
     }, [photoCount]);
 
     // Generate photo positions using Mitchell's Best-Candidate Algorithm for uniform heart distribution
-    // This runs only when count changes
-    const generateHeartPositions = (count) => {
+    // Memoize this to avoid expensive recalculations
+    const generateHeartPositions = React.useCallback((count) => {
         const positions = [];
-        const numCandidates = 20; // Increased from 10 to 20 for better shape definition
+        const numCandidates = 20; 
 
-        // Heart boundary function (Cartesian inequality)
-        // (x^2 + y^2 - 1)^3 - x^2 * y^3 <= 0
-        // Scaled to fit roughly -1.5 to 1.5 range
+        // Heart boundary function
         const isInsideHeart = (x, y) => {
-            // Shift y up slightly to center vertically in mathematical space
             y = y - 0.1;
-            // Scale x to make it wider
-            x = x * 1.2; // Adjusted to 1.2 to narrow it slightly (was 1.15), allowing larger overall scale
-            
+            x = x * 1.2; 
             const a = x * x + y * y - 1;
             return a * a * a - x * x * y * y * y <= 0;
         };
@@ -126,16 +304,9 @@ const LoveGallery = () => {
 
             for (let j = 0; j < numCandidates; j++) {
                 let x, y, inside = false;
-                
-                // Rejection sampling for a point inside heart
-                // Try up to 20 times to find a point inside heart
                 for(let k=0; k<20; k++) {
-                    // Try to fill a larger area
-                    x = (Math.random() * 4) - 2; // -2 to 2
-                    y = (Math.random() * 4) - 2; // -2 to 2
-                    
-                    // We only check if it's inside the heart shape
-                    // If we want to fill the "container", we need to scale the heart to fill the container first
+                    x = (Math.random() * 4) - 2; 
+                    y = (Math.random() * 4) - 2; 
                     if(isInsideHeart(x, -y)) { 
                         inside = true;
                         break;
@@ -144,7 +315,6 @@ const LoveGallery = () => {
                 
                 if (!inside) continue; 
 
-                // ... (rest of candidate logic)
                 let minDist = Number.MAX_VALUE;
                 if (positions.length === 0) {
                     minDist = Number.MAX_VALUE;
@@ -164,18 +334,20 @@ const LoveGallery = () => {
             else positions.push({ x: 0, y: 0 });
         }
         return positions;
-    };
+    }, []);
 
     // Store positions in state to keep them stable during re-renders
     const [heartPositions, setHeartPositions] = useState([]);
 
-    // Update photos and positions when photoCount changes
-    React.useEffect(() => {
-        const newPhotos = generatePhotos(photoCount);
-        const newPositions = generateHeartPositions(photoCount);
-        setPhotos(newPhotos);
-        setHeartPositions(newPositions);
-    }, [photoCount]);
+    // Optimize initialization to avoid double renders
+    useEffect(() => {
+        // Calculate positions whenever photo count changes
+        // Use a transition to avoid blocking UI
+        React.startTransition(() => {
+             const newPositions = generateHeartPositions(photoCount);
+             setHeartPositions(newPositions);
+        });
+    }, [photoCount, generateHeartPositions]);
 
     // Helper to get position from pre-calculated array
     const getPhotoStyle = (index, totalCount) => {
@@ -257,6 +429,47 @@ const LoveGallery = () => {
                             >
                                 <Grid size={20} />
                             </button>
+                            <button 
+                                onClick={() => {
+                                    setViewMode('messages');
+                                    // Reset to Mixed Heart if coming from single heart
+                                    const parsed = parseMessages(messageText);
+                                    const shuffled = [...parsed].sort(() => 0.5 - Math.random());
+                                    const selected = shuffled.slice(0, 80);
+                                    applyMixedHeartLayout(selected);
+                                }}
+                                className={`p-2 rounded-full transition-all ${viewMode === 'messages' ? 'bg-pink-600 text-white shadow-lg' : 'text-gray-400 hover:text-white'}`}
+                                title="Mixed Heart Message Wall"
+                            >
+                                <HeartHandshake size={20} />
+                            </button>
+                            <button 
+                                onClick={() => {
+                                    setViewMode('heart-messages-me');
+                                    const parsed = parseMessages(messageText);
+                                    const shuffled = [...parsed].sort(() => 0.5 - Math.random());
+                                    // We need enough messages to fill the heart, filter first then take N
+                                    const meMsgs = shuffled.filter(m => m.sender === 'Rayest').slice(0, 80);
+                                    applySingleHeartLayout(meMsgs, 'Rayest');
+                                }}
+                                className={`p-2 rounded-full transition-all ${viewMode === 'heart-messages-me' ? 'bg-blue-600 text-white shadow-lg' : 'text-gray-400 hover:text-white'}`}
+                                title="Blue Heart (Rayest)"
+                            >
+                                <Heart size={20} className="fill-blue-400 text-blue-400" />
+                            </button>
+                            <button 
+                                onClick={() => {
+                                    setViewMode('heart-messages-you');
+                                    const parsed = parseMessages(messageText);
+                                    const shuffled = [...parsed].sort(() => 0.5 - Math.random());
+                                    const youMsgs = shuffled.filter(m => m.sender !== 'Rayest').slice(0, 80);
+                                    applySingleHeartLayout(youMsgs, 'Partner');
+                                }}
+                                className={`p-2 rounded-full transition-all ${viewMode === 'heart-messages-you' ? 'bg-pink-600 text-white shadow-lg' : 'text-gray-400 hover:text-white'}`}
+                                title="Pink Heart (Ashley)"
+                            >
+                                <Heart size={20} className="fill-pink-400 text-pink-400" />
+                            </button>
                         </div>
 
                         {/* Upload Button - Only visible in Edit Mode */}
@@ -299,7 +512,82 @@ const LoveGallery = () => {
 
             {/* Gallery Content */}
             <div className="max-w-7xl mx-auto min-h-[500px]">
-                {viewMode === 'masonry' ? (
+                {viewMode.includes('messages') ? (
+                    <div className="relative w-full h-[80vh] overflow-hidden bg-gray-900/50 rounded-xl border border-white/10 shadow-2xl">
+                        {/* Windows Desktop Background */}
+                        <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, rgba(255,255,255,0.15) 1px, transparent 0)', backgroundSize: '24px 24px' }}></div>
+                        
+                        {messages.map((msg) => {
+                            const isMe = msg.sender === 'Rayest'; // Me (Rayest)
+                            
+                            // Romantic Theme Colors
+                            // Me: Soft Blue Gradient
+                            // You: Soft Pink Gradient
+                            const headerGradient = isMe 
+                                ? 'bg-gradient-to-r from-blue-400 to-indigo-400' 
+                                : 'bg-gradient-to-r from-pink-400 to-rose-400';
+                            
+                            const borderColor = isMe ? 'border-blue-200' : 'border-pink-200';
+                            const shadowColor = isMe ? 'shadow-blue-200/50' : 'shadow-pink-200/50';
+                            
+                            return (
+                                <motion.div
+                                    key={msg.id}
+                                    drag
+                                    dragMomentum={false}
+                                    onDragStart={() => bringToFront(msg.id)}
+                                    onMouseDown={() => bringToFront(msg.id)}
+                                    layout={false} 
+                                    initial={{ opacity: 0, scale: 0.8, x: 0, y: 0 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0.8, transition: { duration: 0.2 } }}
+                                    transition={{ duration: 0.3 }}
+                                    style={{
+                                        position: 'absolute',
+                                        left: `${msg.x}%`,
+                                        top: `${msg.y}%`,
+                                        zIndex: msg.zIndex,
+                                    }}
+                                    className={`w-64 md:w-72 shadow-lg ${shadowColor} rounded-xl overflow-hidden border ${borderColor} bg-white/95 backdrop-blur-sm flex flex-col`}
+                                >
+                                    {/* Romantic Header */}
+                                    <div className={`${headerGradient} px-3 py-2 flex items-center justify-between cursor-move select-none`}>
+                                        <div className="flex items-center gap-2">
+                                            <Heart size={12} className="text-white fill-white animate-pulse" />
+                                            <span className="text-xs font-medium text-white tracking-wide">
+                                                {msg.date}
+                                            </span>
+                                        </div>
+                                        
+                                        {/* Close Button (Heart Break) */}
+                                        <button 
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleClose(msg.id);
+                                            }}
+                                            className="text-white/80 hover:text-white transition-colors"
+                                        >
+                                            <X size={14} />
+                                        </button>
+                                    </div>
+
+                                    {/* Message Content */}
+                                    <div className="p-4 flex flex-col gap-3">
+                                        <p className="text-gray-700 text-sm font-serif leading-relaxed tracking-wide italic">
+                                            "{msg.content}"
+                                        </p>
+                                        
+                                        <div className="flex justify-end">
+                                            <span className={`text-[10px] uppercase tracking-widest font-medium ${isMe ? 'text-blue-400' : 'text-pink-400'}`}>
+                                                {isMe ? 'From Rayest' : 'From Ashley'}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </motion.div>
+                            );
+                        })}
+                    </div>
+                ) : viewMode === 'masonry' ? (
                     <Masonry
                         breakpointCols={breakpointColumnsObj}
                         className="flex w-auto -ml-4"
@@ -310,7 +598,7 @@ const LoveGallery = () => {
                                 key={photo.id}
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: index * 0.1 }}
+                                transition={{ delay: Math.min(index * 0.05, 1.0) }} 
                                 className="mb-4 break-inside-avoid"
                             >
                                 <div 
@@ -320,6 +608,8 @@ const LoveGallery = () => {
                                     <img 
                                         src={photo.src} 
                                         alt={photo.caption} 
+                                        loading="lazy"
+                                        decoding="async"
                                         className="w-full h-auto object-cover transform group-hover:scale-105 transition-transform duration-500"
                                     />
                                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
@@ -344,7 +634,7 @@ const LoveGallery = () => {
                                     return (
                                     <motion.div
                                         key={photo.id}
-                                        initial={{ opacity: 0, scale: 0.8, rotate: 0 }}
+                                        initial={{ opacity: 0 }}
                                         animate={{ 
                                             opacity: 1, 
                                             scale: style.scale, 
@@ -353,7 +643,7 @@ const LoveGallery = () => {
                                             top: style.top
                                         }}
                                         whileHover={{ scale: style.scale * 1.2, zIndex: 50, rotate: 0 }}
-                                        transition={{ type: "spring", stiffness: 200, damping: 20 }}
+                                        transition={{ duration: 0.5, ease: "easeOut" }}
                                         className="absolute group cursor-pointer"
                                         style={{ zIndex: index + 1 }} // Initial stack order
                                         onClick={() => setSelectedPhoto(photo)}
@@ -361,8 +651,10 @@ const LoveGallery = () => {
                                         <div className="bg-white p-1 pb-4 shadow-[1px_1px_4px_rgba(0,0,0,0.2)] w-20 md:w-24 transform transition-transform duration-300">
                                             <div className="aspect-square overflow-hidden bg-gray-100 mb-0.5 border border-gray-200">
                                                 <img 
-                                                    src={photo.src} 
+                                                    src={photo.thumbnail || photo.src} 
                                                     alt={photo.caption} 
+                                                    loading="lazy"
+                                                    decoding="async"
                                                     className="w-full h-full object-cover filter sepia-[.15] contrast-110 group-hover:sepia-0 transition-all duration-500"
                                                 />
                                             </div>

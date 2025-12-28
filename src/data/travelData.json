@@ -114,28 +114,87 @@
       "id": 1766492742887
     },
     {
-      "name": "南京市",
+      "name": "深圳",
       "country": "中国",
-      "lat": 32.0438284,
-      "lng": 118.7788631,
-      "full_name": "南京市, 江苏省, 中国",
-      "id": 1766492747685
+      "lat": 22.5431,
+      "lng": 114.0579,
+      "full_name": "深圳, 中国",
+      "id": 1766943655644
     },
     {
-      "name": "苏州市",
-      "country": "中国",
-      "lat": 31.311123,
-      "lng": 120.6212881,
-      "full_name": "苏州市, 江苏省, 中国",
-      "id": 1766492753702
+      "name": "Nanchang",
+      "country": "China",
+      "lat": 28.68396,
+      "lng": 115.85306,
+      "full_name": "Nanchang, China",
+      "id": 1766943829515,
+      "notes": "",
+      "nickname": "南昌"
     },
     {
-      "name": "北京市",
+      "name": "成都",
       "country": "中国",
-      "lat": 40.190632,
-      "lng": 116.412144,
-      "full_name": "北京市, 中国",
-      "id": 1766492762443
+      "lat": 30.5728,
+      "lng": 104.0668,
+      "full_name": "成都, 中国",
+      "id": 1766943976868,
+      "notes": ""
+    },
+    {
+      "name": "重庆",
+      "country": "中国",
+      "lat": 29.563,
+      "lng": 106.5516,
+      "full_name": "重庆, 中国",
+      "id": 1766943981785,
+      "notes": ""
+    },
+    {
+      "name": "Kashitashi",
+      "country": "China",
+      "lat": 36.30431,
+      "lng": 79.91459,
+      "full_name": "Kashitashi, China",
+      "id": 1766944002944,
+      "notes": "",
+      "nickname": "喀什"
+    },
+    {
+      "name": "长沙",
+      "country": "中国",
+      "lat": 28.2282,
+      "lng": 112.9388,
+      "full_name": "长沙, 湖南, 中国",
+      "id": 1766944481722,
+      "notes": ""
+    },
+    {
+      "name": "哈尔滨",
+      "country": "中国",
+      "lat": 45.8038,
+      "lng": 126.5349,
+      "full_name": "哈尔滨, 黑龙江, 中国",
+      "id": 1766944494183,
+      "notes": ""
+    },
+    {
+      "name": "乌镇",
+      "country": "中国",
+      "lat": 30.7481,
+      "lng": 120.4851,
+      "full_name": "乌镇, 浙江, 中国",
+      "id": 1766944502399,
+      "notes": ""
+    },
+    {
+      "name": "Luoyang",
+      "country": "China",
+      "lat": 34.67345,
+      "lng": 112.43684,
+      "full_name": "Luoyang, China",
+      "id": 1766944545958,
+      "notes": "",
+      "nickname": "洛阳"
     }
   ],
   "calendarMarkers": [

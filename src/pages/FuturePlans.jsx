@@ -1,40 +1,128 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useTravel } from '../context/TravelContext';
-import { Search, Plus, Trash2, MapPin, Rocket, Save } from 'lucide-react';
+import { Search, Plus, Trash2, MapPin, Rocket, Save, Edit2, X, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { IS_EDIT_MODE } from '../config';
+import { countryToIso } from '../utils/countryHelpers';
 
 const FuturePlans = () => {
-    const { futurePlans, addFuturePlan, removeFuturePlan, saveToDisk } = useTravel();
+    const { futurePlans, addFuturePlan, updateFuturePlan, removeFuturePlan, saveToDisk } = useTravel();
     const [searchQuery, setSearchQuery] = useState('');
     const [searchResults, setSearchResults] = useState([]);
     const [isSearching, setIsSearching] = useState(false);
+    const [allCities, setAllCities] = useState([]);
+    const [worldCitiesZh, setWorldCitiesZh] = useState([]);
+    const [isDataLoaded, setIsDataLoaded] = useState(false);
+
+    // State for editing nicknames
+    const [editingId, setEditingId] = useState(null);
+    const [editValue, setEditValue] = useState('');
+
+    const startEditing = (plan) => {
+        setEditingId(plan.id);
+        setEditValue(plan.nickname || '');
+    };
+
+    const saveNickname = (id) => {
+        updateFuturePlan(id, { nickname: editValue });
+        setEditingId(null);
+        setEditValue('');
+    };
+
+    const cancelEditing = () => {
+        setEditingId(null);
+        setEditValue('');
+    };
+
+    // Reverse mapping for Country Code -> Name
+    const isoToName = useMemo(() => {
+        const map = {};
+        Object.entries(countryToIso).forEach(([name, iso]) => {
+            map[iso] = name;
+        });
+        return map;
+    }, []);
+
+    // Load local cities database on mount
+    useEffect(() => {
+        Promise.all([
+            fetch('/data/cities.json').then(res => res.json()),
+            fetch('/data/worldCitiesZh.json').then(res => res.json())
+        ])
+        .then(([englishData, chineseData]) => {
+            setAllCities(englishData);
+            setWorldCitiesZh(chineseData);
+            setIsDataLoaded(true);
+        })
+        .catch(err => console.error("Failed to load cities database:", err));
+    }, []);
 
     const handleSearch = async (e) => {
         e.preventDefault();
         if (!searchQuery.trim()) return;
 
         setIsSearching(true);
-        try {
-            const response = await fetch(
-                `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchQuery)}`
-            );
-            const data = await response.json();
-            setSearchResults(data);
-        } catch (error) {
-            console.error("Search failed:", error);
-        } finally {
-            setIsSearching(false);
-        }
+        
+        // Simulate async search for better UX (prevent blocking main thread immediately)
+        setTimeout(() => {
+            try {
+                if (!isDataLoaded) {
+                    alert("Cities database is still loading. Please wait a moment.");
+                    setIsSearching(false);
+                    return;
+                }
+
+                const query = searchQuery.toLowerCase();
+                let results = [];
+
+                // 1. First search in Chinese dataset
+                const zhResults = worldCitiesZh.filter(city => 
+                    city.name.includes(query) || city.en_name.toLowerCase().startsWith(query)
+                ).map((city, index) => ({
+                    place_id: `zh-${index}`,
+                    name: city.name, // Display Chinese name
+                    country_code: 'ZH', // Placeholder or map if needed
+                    country_name: city.country,
+                    province: city.province, // Pass province if available
+                    lat: city.lat,
+                    lon: city.lng,
+                    display_name: `${city.name}${city.province ? `, ${city.province}` : ''}, ${city.country}`,
+                    is_chinese: true
+                }));
+                
+                results = [...zhResults];
+
+                // 2. If fewer than 20 results, search in English dataset
+                if (results.length < 20) {
+                    const enResults = allCities.filter(city => 
+                        city.name.toLowerCase().startsWith(query)
+                    ).slice(0, 20 - results.length)
+                    .map((city, index) => ({
+                        place_id: `${city.name}-${index}`,
+                        name: city.name,
+                        country_code: city.country,
+                        country_name: isoToName[city.country] || city.country,
+                        lat: city.lat,
+                        lon: city.lng,
+                        display_name: `${city.name}, ${isoToName[city.country] || city.country}`
+                    }));
+                    
+                    results = [...results, ...enResults];
+                }
+
+                setSearchResults(results);
+            } catch (error) {
+                console.error("Search failed:", error);
+            } finally {
+                setIsSearching(false);
+            }
+        }, 100);
     };
 
     const handleAdd = (result) => {
-        const cityName = result.address?.city || result.address?.town || result.address?.village || result.name.split(',')[0];
-        const countryName = result.address?.country || result.display_name.split(',').pop().trim();
-        
         addFuturePlan({
-            name: cityName,
-            country: countryName,
+            name: result.name,
+            country: result.country_name,
             lat: parseFloat(result.lat),
             lng: parseFloat(result.lon),
             full_name: result.display_name
@@ -130,13 +218,61 @@ const FuturePlans = () => {
                                 exit={{ opacity: 0, scale: 0.9 }}
                                 className="glass-panel p-5 rounded-xl border border-white/5 flex justify-between items-center group hover:border-purple-500/30 transition-colors"
                             >
-                                <div className="flex items-center gap-4">
-                                    <div className="w-10 h-10 rounded-full bg-purple-900/30 flex items-center justify-center text-purple-400">
+                                <div className="flex items-center gap-4 flex-1 min-w-0">
+                                    <div className="w-10 h-10 rounded-full bg-purple-900/30 flex items-center justify-center text-purple-400 shrink-0">
                                         <Rocket size={18} />
                                     </div>
-                                    <div>
-                                        <h3 className="font-bold text-lg">{plan.name}</h3>
-                                        <p className="text-xs text-gray-500">{plan.country}</p>
+                                    <div className="min-w-0 flex-1">
+                                        {editingId === plan.id ? (
+                                            <div className="flex items-center gap-2">
+                                                <input
+                                                    type="text"
+                                                    value={editValue}
+                                                    onChange={(e) => setEditValue(e.target.value)}
+                                                    placeholder="Nickname..."
+                                                    className="w-full px-2 py-1 rounded bg-black/40 text-white border border-white/10 focus:outline-none focus:border-purple-500 text-sm"
+                                                    autoFocus
+                                                    onKeyDown={(e) => {
+                                                        if (e.key === 'Enter') saveNickname(plan.id);
+                                                        if (e.key === 'Escape') cancelEditing();
+                                                    }}
+                                                    onClick={(e) => e.stopPropagation()}
+                                                />
+                                                <button 
+                                                    onClick={(e) => { e.stopPropagation(); saveNickname(plan.id); }}
+                                                    className="p-1 hover:bg-green-500/20 rounded text-green-400 transition-colors"
+                                                >
+                                                    <Check size={16} />
+                                                </button>
+                                                <button 
+                                                    onClick={(e) => { e.stopPropagation(); cancelEditing(); }}
+                                                    className="p-1 hover:bg-red-500/20 rounded text-red-400 transition-colors"
+                                                >
+                                                    <X size={16} />
+                                                </button>
+                                            </div>
+                                        ) : (
+                                            <div className="flex items-center gap-2">
+                                                <div className="min-w-0">
+                                                    <h3 className="font-bold text-lg truncate flex items-center gap-2">
+                                                        {plan.name}
+                                                        {plan.nickname && (
+                                                            <span className="text-purple-300 font-normal text-sm">
+                                                                ({plan.nickname})
+                                                            </span>
+                                                        )}
+                                                    </h3>
+                                                    <p className="text-xs text-gray-500">{plan.country}</p>
+                                                </div>
+                                                <button 
+                                                    onClick={(e) => { e.stopPropagation(); startEditing(plan); }}
+                                                    className="opacity-0 group-hover:opacity-100 p-1 hover:bg-white/10 rounded transition-all text-gray-400 hover:text-white"
+                                                    title="Add/Edit Nickname"
+                                                >
+                                                    <Edit2 size={14} />
+                                                </button>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                                 <button 

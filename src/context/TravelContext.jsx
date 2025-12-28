@@ -171,7 +171,29 @@ export const TravelProvider = ({ children }) => {
     };
 
     const addFuturePlan = (plan) => {
-        setFuturePlans(prev => [...prev, { ...plan, id: Date.now() }]);
+        setFuturePlans(prev => {
+            // Check if plan already exists
+            if (prev.some(p => p.name === plan.name && p.country === plan.country)) {
+                return prev;
+            }
+            const newPlans = [...prev, { ...plan, id: Date.now(), notes: '' }];
+            if (!IS_EDIT_MODE) {
+                localStorage.setItem('futurePlans', JSON.stringify(newPlans));
+            }
+            return newPlans;
+        });
+    };
+
+    const updateFuturePlan = (id, updates) => {
+        setFuturePlans(prev => {
+            const newPlans = prev.map(plan => 
+                plan.id === id ? { ...plan, ...updates } : plan
+            );
+            if (!IS_EDIT_MODE) {
+                localStorage.setItem('futurePlans', JSON.stringify(newPlans));
+            }
+            return newPlans;
+        });
     };
 
     const removeFuturePlan = (id) => {
@@ -202,6 +224,7 @@ export const TravelProvider = ({ children }) => {
             modalPrefilledCountry,
             futurePlans,
             addFuturePlan,
+            updateFuturePlan,
             removeFuturePlan,
             calendarNotes,
             setCalendarNote,
