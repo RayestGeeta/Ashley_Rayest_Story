@@ -1,0 +1,158 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Premium Dark Theme Palette */
+
+  /* Instagram/Satellite Dark Mode Palette */
+  --bg-primary: #021025;
+  /* Deep Ocean Blue */
+  --bg-secondary: #051b3b;
+  --accent-color: #34d399;
+  /* Emerald/Mint Green Accent */
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.7);
+
+  --glass-bg: rgba(2, 16, 37, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.1);
+
+  --font-main: 'Inter', sans-serif;
+  --map-ocean: #021025;
+  --map-land: #1b4332;
+  /* Deep Forest Green */
+  --map-land-hover: #2d6a4f;
+  --map-stroke: rgba(0, 0, 0, 0.1);
+  /* Almost invisible stroke */
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-main);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  /* overflow: hidden; Removed to fix scrolling on Detail Page */
+  /* For map immersion */
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--bg-secondary);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+}
+
+/* Utilities */
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, var(--accent-color), #818cf8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Map specific adjustments */
+
+/* Scoped Map Backgrounds */
+.world-map-mode.leaflet-container {
+  background: #aad3df !important;
+  /* Ocean Blue for World Map */
+}
+
+.star-map-mode.leaflet-container {
+  background: transparent !important;
+  /* Transparent for Star Map to show Gradient */
+}
+
+/* Instagram Story Marker Styles moved to App.css */
+
+/* Star Map Styles */
+.star-map-tiles {
+  filter: grayscale(100%) contrast(1.5) brightness(0.5);
+}
+
+@keyframes twinkle {
+
+  0%,
+  100% {
+    opacity: 0.8;
+    transform: scale(1);
+    filter: brightness(1);
+  }
+
+  50% {
+    opacity: 0.4;
+    transform: scale(0.8);
+    filter: brightness(0.8);
+  }
+}
+
+.star-marker {
+  background: white;
+  /* 4-pointed star (Diamond Sparkle) */
+  clip-path: polygon(50% 0%, 65% 40%, 100% 50%, 65% 60%, 50% 100%, 35% 60%, 0% 50%, 35% 40%);
+  width: 100%;
+  height: 100%;
+  /* Use drop-shadow for glow on clipped shapes */
+  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.9)) drop-shadow(0 0 10px rgba(147, 51, 234, 0.5));
+  animation: twinkle 3s infinite ease-in-out;
+}
+
+/* Pseudo-elements removed as the clip-path defines the shape now */
+
+/* Glass Popup Overrides */
+.glass-popup .leaflet-popup-content-wrapper,
+.glass-popup .leaflet-popup-tip {
+  background: rgba(10, 10, 30, 0.85);
+  /* Dark Glass for Galaxy View */
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(147, 51, 234, 0.3);
+  /* Purple border */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  color: white;
+  /* Ensure text defaults to white */
+  border-radius: 12px;
+}
+
+.glass-popup .leaflet-popup-content {
+  margin: 12px 16px;
+  line-height: 1.4;
+}
+
+/* Hide the default close button if desired, or style it */
+.glass-popup .leaflet-popup-close-button {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.glass-popup .leaflet-popup-close-button:hover {
+  color: white;
+}
