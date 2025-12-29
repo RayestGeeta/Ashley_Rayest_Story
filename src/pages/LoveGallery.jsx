@@ -10,7 +10,7 @@ import galleryDataJSON from '../data/galleryData.json';
 import messagesData from '../data/messages.json';
 import wordCloudData from '../data/wordCloudData.json';
 import { IS_EDIT_MODE, USE_RANDOM_DATA_IF_EMPTY } from '../config';
-import ReactWordcloud from 'react-wordcloud';
+import WordCloud from '../components/WordCloud';
 
 const LoveGallery = () => {
     // Default to 'wall' view in View Mode
@@ -562,18 +562,7 @@ const LoveGallery = () => {
                 ) : viewMode === 'cloud' ? (
                     <div className="w-full h-[80vh] flex items-center justify-center bg-gray-900/50 rounded-xl border border-white/10 shadow-2xl overflow-hidden">
                         <div className="w-full h-full p-8">
-                             <ReactWordcloud 
-                                words={wordCloudData}
-                                options={{
-                                    rotations: 2,
-                                    rotationAngles: [-90, 0],
-                                    fontSizes: [20, 100],
-                                    fontFamily: "'Dancing Script', cursive, sans-serif",
-                                    colors: ['#f472b6', '#fb7185', '#e879f9', '#818cf8', '#60a5fa', '#34d399'],
-                                    enableTooltip: true,
-                                    deterministic: true,
-                                }}
-                             />
+                             <WordCloud words={wordCloudData} />
                         </div>
                     </div>
                 ) : viewMode === 'masonry' ? (
