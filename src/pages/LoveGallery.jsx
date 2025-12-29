@@ -2,13 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Masonry from 'react-masonry-css';
 import MessageWall from '../components/MessageWall';
-import { Heart, Upload, X, Camera, Grid, Layout, MapPin, Calendar, Save, MessageSquare, Quote, Minus, Square, HeartHandshake } from 'lucide-react';
+import { Heart, Upload, X, Camera, Grid, Layout, MapPin, Calendar, Save, MessageSquare, Quote, Minus, Square, HeartHandshake, Cloud } from 'lucide-react';
 import { fileToBase64 } from '../utils/fileHelpers';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import galleryDataJSON from '../data/galleryData.json';
 import messagesData from '../data/messages.json';
+import wordCloudData from '../data/wordCloudData.json';
 import { IS_EDIT_MODE, USE_RANDOM_DATA_IF_EMPTY } from '../config';
+import ReactWordcloud from 'react-wordcloud';
 
 const LoveGallery = () => {
     // Default to 'wall' view in View Mode
@@ -502,6 +504,13 @@ const LoveGallery = () => {
                             >
                                 <Heart size={20} className="fill-pink-400 text-pink-400" />
                             </button>
+                            <button 
+                                onClick={() => setViewMode('cloud')}
+                                className={`p-2 rounded-full transition-all ${viewMode === 'cloud' ? 'bg-purple-600 text-white shadow-lg' : 'text-gray-400 hover:text-white'}`}
+                                title="Word Cloud"
+                            >
+                                <Cloud size={20} />
+                            </button>
                         </div>
 
                         {/* Upload Button - Only visible in Edit Mode */}
@@ -550,6 +559,23 @@ const LoveGallery = () => {
                         onBringToFront={bringToFront} 
                         onClose={handleClose} 
                     />
+                ) : viewMode === 'cloud' ? (
+                    <div className="w-full h-[80vh] flex items-center justify-center bg-gray-900/50 rounded-xl border border-white/10 shadow-2xl overflow-hidden">
+                        <div className="w-full h-full p-8">
+                             <ReactWordcloud 
+                                words={wordCloudData}
+                                options={{
+                                    rotations: 2,
+                                    rotationAngles: [-90, 0],
+                                    fontSizes: [20, 100],
+                                    fontFamily: "'Dancing Script', cursive, sans-serif",
+                                    colors: ['#f472b6', '#fb7185', '#e879f9', '#818cf8', '#60a5fa', '#34d399'],
+                                    enableTooltip: true,
+                                    deterministic: true,
+                                }}
+                             />
+                        </div>
+                    </div>
                 ) : viewMode === 'masonry' ? (
                     <>
                     <Masonry

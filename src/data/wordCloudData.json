@@ -1,0 +1,602 @@
+[
+  {
+    "text": "相信",
+    "value": 113
+  },
+  {
+    "text": "很喜欢",
+    "value": 104
+  },
+  {
+    "text": "好多",
+    "value": 97
+  },
+  {
+    "text": "时间",
+    "value": 96
+  },
+  {
+    "text": "分享",
+    "value": 86
+  },
+  {
+    "text": "他们",
+    "value": 78
+  },
+  {
+    "text": "的话",
+    "value": 76
+  },
+  {
+    "text": "世界",
+    "value": 75
+  },
+  {
+    "text": "开心",
+    "value": 74
+  },
+  {
+    "text": "特别",
+    "value": 73
+  },
+  {
+    "text": "希望",
+    "value": 73
+  },
+  {
+    "text": "生活",
+    "value": 69
+  },
+  {
+    "text": "一起",
+    "value": 67
+  },
+  {
+    "text": "可爱",
+    "value": 67
+  },
+  {
+    "text": "朋友",
+    "value": 65
+  },
+  {
+    "text": "很多",
+    "value": 65
+  },
+  {
+    "text": "上海",
+    "value": 63
+  },
+  {
+    "text": "编辑",
+    "value": 63
+  },
+  {
+    "text": "期待",
+    "value": 63
+  },
+  {
+    "text": "我在",
+    "value": 62
+  },
+  {
+    "text": "照片",
+    "value": 62
+  },
+  {
+    "text": "思考",
+    "value": 61
+  },
+  {
+    "text": "我想",
+    "value": 61
+  },
+  {
+    "text": "都是",
+    "value": 58
+  },
+  {
+    "text": "想法",
+    "value": 55
+  },
+  {
+    "text": "非常",
+    "value": 55
+  },
+  {
+    "text": "我是",
+    "value": 53
+  },
+  {
+    "text": "以后",
+    "value": 53
+  },
+  {
+    "text": "慢慢",
+    "value": 52
+  },
+  {
+    "text": "小时",
+    "value": 51
+  },
+  {
+    "text": "电影",
+    "value": 51
+  },
+  {
+    "text": "大家",
+    "value": 51
+  },
+  {
+    "text": "是不是",
+    "value": 51
+  },
+  {
+    "text": "比较",
+    "value": 50
+  },
+  {
+    "text": "对方",
+    "value": 50
+  },
+  {
+    "text": "别人",
+    "value": 49
+  },
+  {
+    "text": "工作",
+    "value": 48
+  },
+  {
+    "text": "你会",
+    "value": 48
+  },
+  {
+    "text": "想到",
+    "value": 47
+  },
+  {
+    "text": "地方",
+    "value": 46
+  },
+  {
+    "text": "五月",
+    "value": 44
+  },
+  {
+    "text": "刚刚",
+    "value": 44
+  },
+  {
+    "text": "已经",
+    "value": 44
+  },
+  {
+    "text": "意义",
+    "value": 42
+  },
+  {
+    "text": "很好",
+    "value": 42
+  },
+  {
+    "text": "或许",
+    "value": 42
+  },
+  {
+    "text": "当然",
+    "value": 42
+  },
+  {
+    "text": "谢谢",
+    "value": 42
+  },
+  {
+    "text": "也有",
+    "value": 41
+  },
+  {
+    "text": "以前",
+    "value": 41
+  },
+  {
+    "text": "浪漫",
+    "value": 41
+  },
+  {
+    "text": "文字",
+    "value": 40
+  },
+  {
+    "text": "所有",
+    "value": 39
+  },
+  {
+    "text": "存在",
+    "value": 39
+  },
+  {
+    "text": "想要",
+    "value": 38
+  },
+  {
+    "text": "最后",
+    "value": 37
+  },
+  {
+    "text": "旅游",
+    "value": 36
+  },
+  {
+    "text": "不知道",
+    "value": 36
+  },
+  {
+    "text": "个人",
+    "value": 36
+  },
+  {
+    "text": "看看",
+    "value": 36
+  },
+  {
+    "text": "现实",
+    "value": 36
+  },
+  {
+    "text": "超级",
+    "value": 35
+  },
+  {
+    "text": "人的",
+    "value": 35
+  },
+  {
+    "text": "当时",
+    "value": 35
+  },
+  {
+    "text": "宇宙",
+    "value": 35
+  },
+  {
+    "text": "嗯嗯",
+    "value": 34
+  },
+  {
+    "text": "故事",
+    "value": 34
+  },
+  {
+    "text": "你是",
+    "value": 34
+  },
+  {
+    "text": "情绪",
+    "value": 34
+  },
+  {
+    "text": "完全",
+    "value": 34
+  },
+  {
+    "text": "只是",
+    "value": 34
+  },
+  {
+    "text": "消息",
+    "value": 34
+  },
+  {
+    "text": "不要",
+    "value": 33
+  },
+  {
+    "text": "聊天",
+    "value": 33
+  },
+  {
+    "text": "到了",
+    "value": 33
+  },
+  {
+    "text": "会不会",
+    "value": 33
+  },
+  {
+    "text": "表情",
+    "value": 33
+  },
+  {
+    "text": "像是",
+    "value": 32
+  },
+  {
+    "text": "就像",
+    "value": 32
+  },
+  {
+    "text": "需要",
+    "value": 32
+  },
+  {
+    "text": "交流",
+    "value": 32
+  },
+  {
+    "text": "回家",
+    "value": 31
+  },
+  {
+    "text": "手机",
+    "value": 31
+  },
+  {
+    "text": "看了",
+    "value": 31
+  },
+  {
+    "text": "都会",
+    "value": 31
+  },
+  {
+    "text": "单曲",
+    "value": 30
+  },
+  {
+    "text": "城市",
+    "value": 30
+  },
+  {
+    "text": "演唱",
+    "value": 29
+  },
+  {
+    "text": "起来",
+    "value": 29
+  },
+  {
+    "text": "漂亮",
+    "value": 29
+  },
+  {
+    "text": "突然",
+    "value": 29
+  },
+  {
+    "text": "我还",
+    "value": 28
+  },
+  {
+    "text": "想象",
+    "value": 28
+  },
+  {
+    "text": "人类",
+    "value": 28
+  },
+  {
+    "text": "好好",
+    "value": 28
+  },
+  {
+    "text": "就好",
+    "value": 28
+  },
+  {
+    "text": "发现",
+    "value": 28
+  },
+  {
+    "text": "内心",
+    "value": 28
+  },
+  {
+    "text": "眼睛",
+    "value": 28
+  },
+  {
+    "text": "说的",
+    "value": 28
+  },
+  {
+    "text": "肯定",
+    "value": 28
+  },
+  {
+    "text": "甚至",
+    "value": 28
+  },
+  {
+    "text": "总是",
+    "value": 28
+  },
+  {
+    "text": "美好",
+    "value": 28
+  },
+  {
+    "text": "大叔",
+    "value": 28
+  },
+  {
+    "text": "属于",
+    "value": 27
+  },
+  {
+    "text": "那种",
+    "value": 27
+  },
+  {
+    "text": "继续",
+    "value": 27
+  },
+  {
+    "text": "笑死",
+    "value": 27
+  },
+  {
+    "text": "才是",
+    "value": 27
+  },
+  {
+    "text": "方式",
+    "value": 27
+  },
+  {
+    "text": "去了",
+    "value": 27
+  },
+  {
+    "text": "她们",
+    "value": 27
+  },
+  {
+    "text": "那边",
+    "value": 26
+  },
+  {
+    "text": "很久",
+    "value": 26
+  },
+  {
+    "text": "记录",
+    "value": 26
+  },
+  {
+    "text": "睡觉",
+    "value": 26
+  },
+  {
+    "text": "感谢",
+    "value": 26
+  },
+  {
+    "text": "真的是",
+    "value": 26
+  },
+  {
+    "text": "写信",
+    "value": 26
+  },
+  {
+    "text": "记得",
+    "value": 26
+  },
+  {
+    "text": "直接",
+    "value": 25
+  },
+  {
+    "text": "过程",
+    "value": 25
+  },
+  {
+    "text": "家里",
+    "value": 25
+  },
+  {
+    "text": "看见",
+    "value": 25
+  },
+  {
+    "text": "话题",
+    "value": 25
+  },
+  {
+    "text": "的是",
+    "value": 25
+  },
+  {
+    "text": "视角",
+    "value": 25
+  },
+  {
+    "text": "选择",
+    "value": 24
+  },
+  {
+    "text": "变成",
+    "value": 24
+  },
+  {
+    "text": "每次",
+    "value": 24
+  },
+  {
+    "text": "也可以",
+    "value": 24
+  },
+  {
+    "text": "重要",
+    "value": 24
+  },
+  {
+    "text": "回来",
+    "value": 24
+  },
+  {
+    "text": "心情",
+    "value": 24
+  },
+  {
+    "text": "了解",
+    "value": 23
+  },
+  {
+    "text": "歌曲",
+    "value": 23
+  },
+  {
+    "text": "一种",
+    "value": 23
+  },
+  {
+    "text": "你有",
+    "value": 23
+  },
+  {
+    "text": "性格",
+    "value": 23
+  },
+  {
+    "text": "画面",
+    "value": 23
+  },
+  {
+    "text": "缘分",
+    "value": 23
+  },
+  {
+    "text": "惊喜",
+    "value": 23
+  },
+  {
+    "text": "人生",
+    "value": 23
+  },
+  {
+    "text": "生日",
+    "value": 23
+  },
+  {
+    "text": "一定",
+    "value": 23
+  },
+  {
+    "text": "温暖",
+    "value": 23
+  },
+  {
+    "text": "好的",
+    "value": 23
+  },
+  {
+    "text": "状态",
+    "value": 23
+  },
+  {
+    "text": "未来",
+    "value": 23
+  }
+]
