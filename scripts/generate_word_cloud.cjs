@@ -13,13 +13,14 @@ const stopWords = new Set([
     '哈哈', '哈哈哈', '哈哈哈哈', '哈哈哈哈哈', '啊啊', '啊啊啊', '呜呜', '嘿嘿', '嘻嘻', '嗯', '哦', '噢', '哎', '唉', '嘛', '啦', '呀',
     '着', '过', '得', '地', '之', '和', '与', '或', '及', '等', '跟', '被', '把', '让', '给', '但', '那', '这', '它', '他', '她',
     '自己', '怎么', '怎样', '如何', '为什么', '为了', '对于', '关于', '作为', '随着', '通过', '进行', '开始', '结束', '完成',
-    '全部', '文件', '链接', '音乐', '音频', '取消', '喜欢', // "喜欢" might be meaningful, but if it appears too much as "Liked a message", it's noise. Let's keep "喜欢" for now but filter system msg.
+    '全部', '文件', '链接', '音乐', '音频', '取消', // Removed '喜欢' from stop words
     '5G', '2025', '2024', '13', '12', '11', '10', '09', '08', '07', '06', '05', '04', '03', '02', '01', '00',
     'com', 'http', 'https', 'www', 'jpg', 'png', 'mp4',
     '一个', '你的', '我也', '这样', '真的', '也是', '没有', '我的', '其实', '一样', '现在', '什么', '可以', '觉得',
     '还是', '因为', '所以', '如果', '但是', '虽然', '而且', '时候', '知道', '出来', '有点', '不用', '不能', '不会',
     '看到', '还有', '那个', '这个', '这么', '那么', '这里', '那里', '一直', '一下', '一次', '一天', '一点', '一些',
-    '不过', '好像', '不是', '这种', '这些', '那些', '有些', '东西', '事情', '问题', '之前', '之后', '今天', '明天', '后天'
+    '不过', '好像', '不是', '这种', '这些', '那些', '有些', '东西', '事情', '问题', '之前', '之后', '今天', '明天', '后天',
+    '的话', '他们'
 ]);
 
 // Special system messages to ignore completely
@@ -87,8 +88,13 @@ function generateWordCloud() {
     for (const { segment, isWordLike } of segments) {
         if (!isWordLike) continue;
         
-        const word = segment.trim();
+        let word = segment.trim();
         
+        // Merge '很喜欢' into '喜欢'
+        if (word === '很喜欢') word = '喜欢';
+        // Merge '好多' into '很多'
+        if (word === '好多') word = '很多';
+
         // Filter
         if (word.length < 2) continue; // Skip single chars usually
         if (stopWords.has(word)) continue;
@@ -102,7 +108,7 @@ function generateWordCloud() {
     const wordArray = Object.entries(wordCounts)
         .map(([text, value]) => ({ text, value }))
         .sort((a, b) => b.value - a.value) // Sort by frequency
-        .slice(0, 150); // Top 150 words
+        .slice(0, 400); // Top 400 words
 
     fs.writeFileSync(outputPath, JSON.stringify(wordArray, null, 2));
     console.log(`Generated Word Cloud with ${wordArray.length} words.`);

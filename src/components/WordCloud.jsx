@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3-selection';
+import 'd3-transition'; // Import transition
 import cloud from 'd3-cloud';
 import { scaleOrdinal } from 'd3-scale';
 import { schemeCategory10 } from 'd3-scale-chromatic';
@@ -44,14 +45,33 @@ const WordCloud = ({ words }) => {
         const colors = ['#f472b6', '#fb7185', '#e879f9', '#818cf8', '#60a5fa', '#34d399'];
         const fill = (i) => colors[i % colors.length];
 
+        // Find max value for normalization
+        const maxVal = Math.max(...words.map(w => w.value));
+
         // Layout
         const layout = cloud()
             .size([dimensions.width, dimensions.height])
             .words(words.map(d => ({ text: d.text, size: d.value }))) // Map data
-            .padding(5)
-            .rotate(() => (~~(Math.random() * 2) * -90)) // 0 or -90
+            .padding(2)
+            .rotate(0) // No rotation, all horizontal
             .font("'Dancing Script', cursive, sans-serif")
-            .fontSize(d => Math.sqrt(d.size) * 10) // Scale size
+            .fontSize(d => {
+                // Aggressive Highlighting for Top Words
+                const ratio = d.size / maxVal;
+                
+                // Identify Top 10-ish words
+                // Adjusted threshold to include words like '生活', '一起'
+                if (ratio > 0.09) {
+                    // Top words: Make them significantly larger
+                    // Map ratio 0.09 -> 1.0 to size 60px -> 160px
+                    return 60 + (ratio * 100);
+                } else {
+                    // Other words: Gentle scaling
+                    // Map remaining to 16px -> 40px
+                    const size = Math.pow(d.size, 0.4) * 6; 
+                    return Math.min(Math.max(size, 16), 40);
+                }
+            })
             .on('end', draw);
 
         layout.start();
