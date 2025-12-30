@@ -1,11 +1,12 @@
 import React, { useState, useMemo } from 'react';
 import { useTravel } from '../context/TravelContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, MapPin, Clock, Save } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Calendar as CalendarIcon, MapPin, Clock, Save } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { IS_EDIT_MODE } from '../config';
 
 const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
 
 const EMOJI_CATEGORIES = {
     Weather: ['🌞', '☁️', '🌧️', '❄️', '⛈️', '🌈', '🌬️'],
@@ -15,15 +16,21 @@ const EMOJI_CATEGORIES = {
     Travel: ['✈️', '🚗', '🚂', '⛺', '🏝️', '🗽', '🗺️']
 };
 const TravelCalendar = () => {
-    const { visitedPlaces, calendarMarkers, toggleMarker, calendarNotes, setCalendarNote, saveToDisk } = useTravel();
+    const { visitedPlaces, calendarMarkers, toggleMarker, calendarNotes, setCalendarNote, saveToDisk, customEmojis, addCustomEmoji, removeCustomEmoji } = useTravel();
     const [currentDate, setCurrentDate] = useState(new Date());
     const [selectedDate, setSelectedDate] = useState(null);
     const [customEmoji, setCustomEmoji] = useState('');
+    const [expandedSections, setExpandedSections] = useState({ note: true, markers: true });
+
+    const toggleSection = (section) => {
+        setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }));
+    };
 
     const handleAddCustomEmoji = () => {
         if (!customEmoji) return;
         const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(selectedDate).padStart(2, '0')}`;
         toggleMarker(dateStr, customEmoji);
+        addCustomEmoji(customEmoji);
         setCustomEmoji('');
     };
 
@@ -46,6 +53,43 @@ const TravelCalendar = () => {
         return logs;
     }, [visitedPlaces]);
 
+    // Calculate Trip Ranges (inferred from logs)
+    const tripRanges = useMemo(() => {
+        return visitedPlaces.map(place => {
+            // Priority 1: Use explicit trip dates from article metadata if available
+            if (place.article?.tripStartDate && place.article?.tripEndDate) {
+                 return {
+                    placeId: place.id,
+                    cityName: place.cityName,
+                    countryName: place.countryName,
+                    startDateStr: place.article.tripStartDate,
+                    endDateStr: place.article.tripEndDate,
+                    coverImage: place.article?.coverImage || place.coverImage,
+                    title: place.article?.title || `${place.cityName} Trip`
+                };
+            }
+
+            // Priority 2: Fallback to inferring from logs
+            if (!place.logs || place.logs.length === 0) return null;
+            
+            // Extract date strings directly (YYYY-MM-DD)
+            const dates = place.logs.map(l => l.date).filter(Boolean);
+            if (dates.length === 0) return null;
+
+            // Normalize to YYYY-MM-DD strings for easier comparison
+            const sortedDates = dates.sort();
+            return {
+                placeId: place.id,
+                cityName: place.cityName,
+                countryName: place.countryName,
+                startDateStr: sortedDates[0],
+                endDateStr: sortedDates[sortedDates.length - 1],
+                coverImage: place.article?.coverImage || place.coverImage,
+                title: place.article?.title || `${place.cityName} Trip`
+            };
+        }).filter(Boolean);
+    }, [visitedPlaces]);
+
     // Calendar Logic
     const getDaysInMonth = (date) => {
         const year = date.getFullYear();
@@ -56,6 +100,13 @@ const TravelCalendar = () => {
     };
 
     const { days, firstDay, year, month } = getDaysInMonth(currentDate);
+
+    // Get Previous Month's overflow days
+    const prevMonthDays = useMemo(() => {
+        const prevMonthDate = new Date(year, month, 0); // Last day of prev month
+        const prevMonthTotalDays = prevMonthDate.getDate();
+        return Array.from({ length: firstDay }).map((_, i) => prevMonthTotalDays - firstDay + i + 1);
+    }, [year, month, firstDay]);
 
     const prevMonth = () => {
         setCurrentDate(new Date(year, month - 1, 1));
@@ -70,6 +121,13 @@ const TravelCalendar = () => {
     const getLogsForDay = (day) => {
         const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
         return allLogs.filter(log => log.originalDate === dateStr);
+    };
+
+    const getTripsForDay = (day) => {
+        const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        // Only show trips if the current day falls within the range
+        // AND if the trip actually spans more than 1 day (or if it's a single day trip, we can show it too)
+        return tripRanges.filter(trip => dateStr >= trip.startDateStr && dateStr <= trip.endDateStr);
     };
 
     const getMarkersForDay = (day) => {
@@ -141,15 +199,18 @@ const TravelCalendar = () => {
 
                         {/* Days */}
                         <div className="grid grid-cols-7 gap-2">
-                            {/* Empty cells for padding */}
-                            {Array.from({ length: firstDay }).map((_, i) => (
-                                <div key={`empty-${i}`} className="h-24 md:h-32 rounded-xl bg-transparent" />
+                            {/* Empty cells for padding (Previous Month Days) */}
+                            {prevMonthDays.map((day, i) => (
+                                <div key={`prev-${day}`} className="h-24 md:h-32 rounded-xl bg-white/5 opacity-30 flex items-start justify-center p-3 border border-white/5">
+                                    <span className="text-sm font-bold text-gray-500">{day}</span>
+                                </div>
                             ))}
 
                             {/* Actual Days */}
                             {Array.from({ length: days }).map((_, i) => {
                                 const day = i + 1;
                                 const dayLogs = getLogsForDay(day);
+                                const dayTrips = getTripsForDay(day);
                                 const dayMarkers = getMarkersForDay(day);
                                 const isSelected = selectedDate === day;
 
@@ -158,7 +219,7 @@ const TravelCalendar = () => {
                                         key={day}
                                         onClick={() => setSelectedDate(day)}
                                         className={`
-                                            h-24 md:h-32 rounded-xl p-3 relative cursor-pointer transition-all border
+                                            h-24 md:h-32 rounded-xl p-3 relative cursor-pointer transition-all border overflow-hidden
                                             ${isSelected
                                                 ? 'bg-white/10 border-emerald-500/50 shadow-[0_0_15px_rgba(52,211,153,0.3)]'
                                                 : isToday(day)
@@ -167,7 +228,7 @@ const TravelCalendar = () => {
                                             }
                                         `}
                                     >
-                                        <div className="flex justify-between items-start">
+                                        <div className="flex justify-between items-start relative z-10">
                                             <div className={`text-sm font-bold ${isToday(day) ? 'text-emerald-400' : 'text-gray-400'}`}>
                                                 {day}
                                             </div>
@@ -179,15 +240,30 @@ const TravelCalendar = () => {
                                             </div>
                                         </div>
                                         
+                                        {/* Trip Indicators (Background Bars) */}
+                                        <div className="flex flex-col gap-1 mt-1 mb-1">
+                                            {dayTrips.map(trip => (
+                                                <div 
+                                                    key={trip.placeId} 
+                                                    className="h-4 w-full rounded-md bg-gradient-to-r from-blue-500/50 to-purple-500/50 border border-blue-400/30 flex items-center px-1"
+                                                    title={`${trip.cityName} Trip`}
+                                                >
+                                                    <span className="text-[9px] text-white/90 truncate font-medium">
+                                                        {trip.cityName}
+                                                    </span>
+                                                </div>
+                                            ))}
+                                        </div>
+
                                         {/* Simple Note Preview */}
                                         {getNoteForDay(day) && (
-                                            <div className="text-[10px] text-emerald-300 italic truncate mt-1 opacity-70">
+                                            <div className="text-[10px] text-emerald-300 italic mt-0.5 opacity-70 relative z-10 break-words leading-tight line-clamp-none">
                                                 "{getNoteForDay(day)}"
                                             </div>
                                         )}
 
                                         {/* Log Markers (Chips) */}
-                                        <div className="mt-2 flex flex-wrap content-start gap-1 overflow-hidden h-[calc(100%-40px)]">
+                                        <div className="mt-1 flex flex-wrap content-start gap-1 overflow-hidden h-[calc(100%-50px)] relative z-10">
                                             {dayLogs.slice(0, 3).map((log, idx) => (
                                                 <div
                                                     key={idx}
@@ -229,73 +305,167 @@ const TravelCalendar = () => {
 
                                     {/* Mood/Weather Selector */}
                                     <div className="mb-8 p-4 bg-white/5 rounded-xl border border-white/5">
-                                        <h4 className="text-xs text-gray-400 uppercase tracking-wider mb-3">Day Note</h4>
-                                        <textarea 
-                                            value={getNoteForDay(selectedDate)}
-                                            onChange={(e) => {
-                                                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(selectedDate).padStart(2, '0')}`;
-                                                setCalendarNote(dateStr, e.target.value);
-                                            }}
-                                            placeholder="How was your day? (e.g., 'Feeling great!')"
-                                            className="w-full bg-black/40 border border-white/10 rounded-lg p-3 text-sm text-white focus:border-emerald-500 focus:outline-none resize-none h-20 mb-4"
-                                        />
-
-                                        <h4 className="text-xs text-gray-400 uppercase tracking-wider mb-3">Add Day Marker</h4>
-
-                                        <div className="space-y-4 mb-4 h-60 overflow-y-auto pr-2 custom-scrollbar">
-                                            {Object.entries(EMOJI_CATEGORIES).map(([category, emojis]) => (
-                                                <div key={category}>
-                                                    <h5 className="text-[10px] text-emerald-500/80 uppercase font-bold mb-2">{category}</h5>
-                                                    <div className="flex flex-wrap gap-2">
-                                                        {emojis.map(emoji => {
+                                        {/* Collapsible Day Note */}
+                                        <div 
+                                            className="flex justify-between items-center cursor-pointer mb-3"
+                                            onClick={() => toggleSection('note')}
+                                        >
+                                            <h4 className="text-xs text-gray-400 uppercase tracking-wider">Day Note</h4>
+                                            {expandedSections.note ? <ChevronUp size={14} className="text-gray-400" /> : <ChevronDown size={14} className="text-gray-400" />}
+                                        </div>
+                                        
+                                        <AnimatePresence>
+                                            {expandedSections.note && (
+                                                <motion.div
+                                                    initial={{ height: 0, opacity: 0 }}
+                                                    animate={{ height: 'auto', opacity: 1 }}
+                                                    exit={{ height: 0, opacity: 0 }}
+                                                    className="overflow-hidden"
+                                                >
+                                                    <textarea 
+                                                        value={getNoteForDay(selectedDate)}
+                                                        onChange={(e) => {
                                                             const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(selectedDate).padStart(2, '0')}`;
-                                                            const isActive = getMarkersForDay(selectedDate).some(m => m.icon === emoji);
-                                                            return (
-                                                                <button
-                                                                    key={emoji}
-                                                                    onClick={() => toggleMarker(dateStr, emoji)}
-                                                                    className={`
-                                                                        w-8 h-8 rounded-full flex items-center justify-center text-lg transition-all
-                                                                        ${isActive
-                                                                            ? 'bg-emerald-500 text-white shadow-[0_0_10px_rgba(16,185,129,0.5)] scale-110'
-                                                                            : 'bg-black/40 text-gray-400 hover:bg-white/10 hover:text-white hover:scale-105'
-                                                                        }
-                                                                    `}
-                                                                >
-                                                                    {emoji}
-                                                                </button>
-                                                            );
-                                                        })}
-                                                    </div>
-                                                </div>
-                                            ))}
+                                                            setCalendarNote(dateStr, e.target.value);
+                                                        }}
+                                                        placeholder="How was your day? (e.g., 'Feeling great!')"
+                                                        className="w-full bg-black/40 border border-white/10 rounded-lg p-3 text-sm text-white focus:border-emerald-500 focus:outline-none resize-none h-20 mb-4"
+                                                    />
+                                                </motion.div>
+                                            )}
+                                        </AnimatePresence>
+
+                                        {/* Collapsible Markers */}
+                                        <div 
+                                            className="flex justify-between items-center cursor-pointer mb-3 mt-2"
+                                            onClick={() => toggleSection('markers')}
+                                        >
+                                            <h4 className="text-xs text-gray-400 uppercase tracking-wider">Add Day Marker</h4>
+                                            {expandedSections.markers ? <ChevronUp size={14} className="text-gray-400" /> : <ChevronDown size={14} className="text-gray-400" />}
                                         </div>
 
-                                        {/* Custom Emoji Input */}
-                                        <div className="flex gap-2 pt-2 border-t border-white/5">
-                                            <input
-                                                type="text"
-                                                placeholder="Or type any emoji..."
-                                                maxLength={2}
-                                                value={customEmoji}
-                                                onChange={(e) => setCustomEmoji(e.target.value)}
-                                                className="bg-black/40 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-white focus:border-emerald-500 focus:outline-none w-full"
-                                                onKeyDown={(e) => {
-                                                    if (e.key === 'Enter') handleAddCustomEmoji();
-                                                }}
-                                            />
-                                            <button
-                                                onClick={handleAddCustomEmoji}
-                                                className="text-xs bg-white/10 hover:bg-white/20 px-3 rounded-lg text-gray-300 hover:text-white transition-colors"
-                                            >
-                                                Add
-                                            </button>
-                                        </div>
+                                        <AnimatePresence>
+                                            {expandedSections.markers && (
+                                                <motion.div
+                                                    initial={{ height: 0, opacity: 0 }}
+                                                    animate={{ height: 'auto', opacity: 1 }}
+                                                    exit={{ height: 0, opacity: 0 }}
+                                                    className="overflow-hidden"
+                                                >
+                                                    <div className="space-y-4 mb-4 h-60 overflow-y-auto pr-2 custom-scrollbar">
+                                                        {/* Custom/User Added Markers */}
+                                                        {customEmojis.length > 0 && (
+                                                            <div key="My Markers">
+                                                                <h5 className="text-[10px] text-emerald-500/80 uppercase font-bold mb-2 flex justify-between items-center">
+                                                                    <span>Add MARKER</span>
+                                                                    <span className="text-[9px] text-gray-500 font-normal normal-case opacity-60">(Right click to delete)</span>
+                                                                </h5>
+                                                                <div className="flex flex-wrap gap-2">
+                                                                    {customEmojis.map(emoji => {
+                                                                        const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(selectedDate).padStart(2, '0')}`;
+                                                                        const isActive = getMarkersForDay(selectedDate).some(m => m.icon === emoji);
+                                                                        return (
+                                                                            <button
+                                                                                key={emoji}
+                                                                                onClick={() => toggleMarker(dateStr, emoji)}
+                                                                                onContextMenu={(e) => {
+                                                                                    e.preventDefault();
+                                                                                    if (confirm(`Remove custom marker "${emoji}" from your palette?`)) {
+                                                                                        removeCustomEmoji(emoji);
+                                                                                    }
+                                                                                }}
+                                                                                className={`
+                                                                                    w-8 h-8 rounded-full flex items-center justify-center text-lg transition-all relative group
+                                                                                    ${isActive
+                                                                                        ? 'bg-emerald-500 text-white shadow-[0_0_10px_rgba(16,185,129,0.5)] scale-110'
+                                                                                        : 'bg-black/40 text-gray-400 hover:bg-white/10 hover:text-white hover:scale-105'
+                                                                                    }
+                                                                                `}
+                                                                                title="Right click to remove from palette"
+                                                                            >
+                                                                                {emoji}
+                                                                            </button>
+                                                                        );
+                                                                    })}
+                                                                </div>
+                                                            </div>
+                                                        )}
+
+                                                        {Object.entries(EMOJI_CATEGORIES).map(([category, emojis]) => (
+                                                            <div key={category}>
+                                                                <h5 className="text-[10px] text-emerald-500/80 uppercase font-bold mb-2">{category}</h5>
+                                                                <div className="flex flex-wrap gap-2">
+                                                                    {emojis.map(emoji => {
+                                                                        const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(selectedDate).padStart(2, '0')}`;
+                                                                        const isActive = getMarkersForDay(selectedDate).some(m => m.icon === emoji);
+                                                                        return (
+                                                                            <button
+                                                                                key={emoji}
+                                                                                onClick={() => toggleMarker(dateStr, emoji)}
+                                                                                className={`
+                                                                                    w-8 h-8 rounded-full flex items-center justify-center text-lg transition-all
+                                                                                    ${isActive
+                                                                                        ? 'bg-emerald-500 text-white shadow-[0_0_10px_rgba(16,185,129,0.5)] scale-110'
+                                                                                        : 'bg-black/40 text-gray-400 hover:bg-white/10 hover:text-white hover:scale-105'
+                                                                                    }
+                                                                                `}
+                                                                            >
+                                                                                {emoji}
+                                                                            </button>
+                                                                        );
+                                                                    })}
+                                                                </div>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+
+                                                    {/* Custom Emoji Input */}
+                                                    <div className="flex gap-2 pt-2 border-t border-white/5">
+                                                        <input
+                                                            type="text"
+                                                            placeholder="Or type any emoji..."
+                                                            maxLength={2}
+                                                            value={customEmoji}
+                                                            onChange={(e) => setCustomEmoji(e.target.value)}
+                                                            className="bg-black/40 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-white focus:border-emerald-500 focus:outline-none w-full"
+                                                            onKeyDown={(e) => {
+                                                                if (e.key === 'Enter') handleAddCustomEmoji();
+                                                            }}
+                                                        />
+                                                        <button
+                                                            onClick={handleAddCustomEmoji}
+                                                            className="text-xs bg-white/10 hover:bg-white/20 px-3 rounded-lg text-gray-300 hover:text-white transition-colors"
+                                                        >
+                                                            Add
+                                                        </button>
+                                                    </div>
+                                                </motion.div>
+                                            )}
+                                        </AnimatePresence>
                                     </div>
 
                                     {/* Logs List */}
                                     <h4 className="text-xs text-gray-400 uppercase tracking-wider mb-3">Memories</h4>
                                     <div className="space-y-4">
+                                        {/* Display Active Trips first */}
+                                        {getTripsForDay(selectedDate).map(trip => (
+                                            <Link to={`/post/${trip.placeId}`} key={`trip-${trip.placeId}`}>
+                                                <div className="group bg-gradient-to-r from-blue-900/40 to-purple-900/40 hover:from-blue-900/60 hover:to-purple-900/60 p-4 rounded-xl border border-blue-500/30 transition-all mb-4">
+                                                    <div className="flex justify-between items-start mb-2">
+                                                        <h4 className="font-bold text-blue-200 group-hover:text-blue-100">
+                                                            ✈️ {trip.cityName} Trip
+                                                        </h4>
+                                                    </div>
+                                                    <div className="text-xs text-gray-400 mb-2">
+                                                        {trip.startDateStr} — {trip.endDateStr}
+                                                    </div>
+                                                    {trip.coverImage && (
+                                                        <img src={trip.coverImage} alt={trip.cityName} className="w-full h-24 object-cover rounded-lg opacity-80 group-hover:opacity-100 transition-opacity" />
+                                                    )}
+                                                </div>
+                                            </Link>
+                                        ))}
+
                                         {getLogsForDay(selectedDate).length > 0 ? (
                                             getLogsForDay(selectedDate).map(log => (
                                                 <Link to={`/post/${log.placeId}`} key={log.id}>

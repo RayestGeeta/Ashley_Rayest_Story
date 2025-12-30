@@ -22,6 +22,8 @@ const saveDataPlugin = () => ({
               filePath = path.resolve(__dirname, 'src/data/travelData.json');
             } else if (file === 'gallery') {
               filePath = path.resolve(__dirname, 'src/data/galleryData.json');
+            } else if (file === 'memo') {
+              filePath = path.resolve(__dirname, 'src/data/memoData.json');
             } else {
               res.statusCode = 400;
               res.end('Invalid file target');

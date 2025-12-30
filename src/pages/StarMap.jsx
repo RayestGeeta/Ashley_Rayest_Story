@@ -12,7 +12,7 @@ const StarMap = () => {
     const [geoJsonData, setGeoJsonData] = useState(null);
     
     // Star Size Configuration
-    const [baseStarSize, setBaseStarSize] = useState(6);
+    const [baseStarSize, setBaseStarSize] = useState(10);
     const [showSettings, setShowSettings] = useState(false);
 
     useEffect(() => {
@@ -70,10 +70,9 @@ const StarMap = () => {
             <div className="absolute inset-0 z-0 pointer-events-none bg-[radial-gradient(circle_at_center,_rgba(76,29,149,0.15)_0%,_transparent_60%)]" />
 
             <div className="absolute top-8 left-24 z-10">
-                <h1 className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-200 via-pink-400 to-purple-200 drop-shadow-[0_0_15px_rgba(192,132,252,0.6)] font-serif tracking-wider">
+                <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-200 via-pink-400 to-purple-200 drop-shadow-[0_0_15px_rgba(192,132,252,0.6)] font-serif tracking-wider">
                     Galaxy of Memories
                 </h1>
-                <p className="text-purple-200/80 mt-2 text-lg italic tracking-wide">Where your stories shine like stars in the night sky.</p>
             </div>
 
             {/* Settings Control */}
@@ -151,7 +150,7 @@ const StarMap = () => {
                     />
                 )}
 
-                {visitedPlaces.map((place) => (
+                {visitedPlaces.filter(p => p.showOnMap !== false).map((place) => (
                     <Marker
                         key={place.id}
                         position={[place.lat, place.lng]}

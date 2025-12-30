@@ -66,6 +66,16 @@ export const TravelProvider = ({ children }) => {
         return [];
     });
 
+    // customEmojis structure: ["🦄", "🐱", ...]
+    const [customEmojis, setCustomEmojis] = useState(() => {
+        if (initialTravelData.customEmojis && initialTravelData.customEmojis.length > 0) {
+            return initialTravelData.customEmojis;
+        }
+        const saved = localStorage.getItem('travel_blog_custom_emojis');
+        if (saved) return JSON.parse(saved);
+        return [];
+    });
+
     // Save to disk function
     const saveToDisk = async (overrides = {}) => {
         if (!IS_EDIT_MODE) return;
@@ -75,7 +85,8 @@ export const TravelProvider = ({ children }) => {
                 visitedPlaces: overrides.visitedPlaces || visitedPlaces,
                 futurePlans: overrides.futurePlans || futurePlans,
                 calendarMarkers: overrides.calendarMarkers || calendarMarkers,
-                calendarNotes: overrides.calendarNotes || calendarNotes
+                calendarNotes: overrides.calendarNotes || calendarNotes,
+                customEmojis: overrides.customEmojis || customEmojis
             };
             
             const response = await fetch('/__api/save', {
@@ -95,6 +106,28 @@ export const TravelProvider = ({ children }) => {
         }
     };
 
+    // Save Memo to disk
+    const saveMemoToDisk = async (memoContent) => {
+        if (!IS_EDIT_MODE) return;
+        try {
+            const response = await fetch('/__api/save', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ file: 'memo', data: { content: memoContent } })
+            });
+            
+            if (response.ok) {
+                return true;
+            } else {
+                console.error('Failed to save memo');
+                return false;
+            }
+        } catch (error) {
+            console.error('Save memo failed:', error);
+            return false;
+        }
+    };
+
     useEffect(() => {
         localStorage.setItem('travel_blog_places', JSON.stringify(visitedPlaces));
     }, [visitedPlaces]);
@@ -110,6 +143,10 @@ export const TravelProvider = ({ children }) => {
     useEffect(() => {
         localStorage.setItem('travel_blog_calendar_notes', JSON.stringify(calendarNotes));
     }, [calendarNotes]);
+
+    useEffect(() => {
+        localStorage.setItem('travel_blog_custom_emojis', JSON.stringify(customEmojis));
+    }, [customEmojis]);
 
     const addPlace = (place) => {
         // Initialize with empty article content if not present
@@ -138,6 +175,29 @@ export const TravelProvider = ({ children }) => {
             }
             return place;
         }));
+    };
+
+    const togglePlaceVisibility = (placeId) => {
+        setVisitedPlaces(prev => {
+            const updated = prev.map(place => {
+                if (place.id === placeId) {
+                    // Default to true if undefined, then toggle
+                    const isVisible = place.showOnMap !== false;
+                    return { ...place, showOnMap: !isVisible };
+                }
+                return place;
+            });
+            
+            // Auto-save if in edit mode
+            if (IS_EDIT_MODE) {
+                // We can't call saveToDisk directly here because it depends on state which is updating
+                // But we can trigger a side effect or just wait for user to save manually?
+                // Actually, let's try to save immediately using the updated data
+                saveToDisk({ visitedPlaces: updated });
+            }
+            
+            return updated;
+        });
     };
 
     const addLogToPlace = (placeId, log) => {
@@ -210,11 +270,23 @@ export const TravelProvider = ({ children }) => {
         });
     };
 
+    const addCustomEmoji = (emoji) => {
+        setCustomEmojis(prev => {
+            if (prev.includes(emoji)) return prev;
+            return [...prev, emoji];
+        });
+    };
+
+    const removeCustomEmoji = (emoji) => {
+        setCustomEmojis(prev => prev.filter(e => e !== emoji));
+    };
+
     return (
         <TravelContext.Provider value={{ 
             visitedPlaces, 
             addPlace, 
             updatePlaceArticle,
+            togglePlaceVisibility,
             addLogToPlace, 
             removePlace, 
             removeLog, 
@@ -230,7 +302,11 @@ export const TravelProvider = ({ children }) => {
             removeFuturePlan,
             calendarNotes,
             setCalendarNote,
-            saveToDisk // Export this function
+            customEmojis,
+            addCustomEmoji,
+            removeCustomEmoji,
+            saveToDisk, // Export this function
+            saveMemoToDisk // Export memo save function
         }}>
             {children}
         </TravelContext.Provider>

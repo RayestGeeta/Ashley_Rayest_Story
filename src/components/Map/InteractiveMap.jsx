@@ -56,6 +56,9 @@ const InteractiveMap = ({ onCountryClick }) => {
     const groupedPlaces = useMemo(() => {
         const groups = {};
         visitedPlaces.forEach(place => {
+            // Check visibility (default true)
+            if (place.showOnMap === false) return;
+
             // Create a unique key for the city
             const key = `${place.cityName}-${place.countryName}`;
             

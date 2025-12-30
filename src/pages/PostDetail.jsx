@@ -7,6 +7,8 @@ import { fileToBase64 } from '../utils/fileHelpers';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import GallerySelector from '../components/GallerySelector';
+import DatePicker from 'react-datepicker';
+import "react-datepicker/dist/react-datepicker.css";
 
 const PostDetail = () => {
     const { id } = useParams();
@@ -21,6 +23,8 @@ const PostDetail = () => {
     const [title, setTitle] = useState(place?.article?.title || '');
     const [content, setContent] = useState(place?.article?.content || '');
     const [coverImage, setCoverImage] = useState(place?.article?.coverImage || place?.coverImage || '');
+    const [tripStartDate, setTripStartDate] = useState(place?.article?.tripStartDate || '');
+    const [tripEndDate, setTripEndDate] = useState(place?.article?.tripEndDate || '');
     const [mediaItems, setMediaItems] = useState(place?.article?.media || []);
 
     // Gallery Selector State
@@ -51,6 +55,8 @@ const PostDetail = () => {
                         title, 
                         content, 
                         coverImage, 
+                        tripStartDate,
+                        tripEndDate,
                         media: mediaItems 
                     } 
                   }
@@ -62,6 +68,8 @@ const PostDetail = () => {
             title,
             content,
             coverImage,
+            tripStartDate,
+            tripEndDate,
             media: mediaItems
         });
         
@@ -194,9 +202,37 @@ const PostDetail = () => {
                         <span className="flex items-center gap-1 bg-[var(--bg-secondary)] px-3 py-1 rounded-full text-sm border border-[var(--glass-border)]">
                             <MapPin size={14} /> {place.cityName}, {place.countryName}
                         </span>
-                        <span className="flex items-center gap-1 bg-[var(--bg-secondary)] px-3 py-1 rounded-full text-sm border border-[var(--glass-border)]">
-                            <Calendar size={14} /> {place.startDate} — {place.endDate}
-                        </span>
+                        
+                        {isEditing ? (
+                            <div className="flex items-center gap-2 bg-[var(--bg-secondary)] px-4 py-2 rounded-full text-sm border border-[var(--glass-border)] hover:bg-white/10 transition-colors z-50 relative">
+                                <Calendar size={14} className="text-[var(--accent-color)]" />
+                                <DatePicker
+                                    selected={tripStartDate ? new Date(tripStartDate) : null}
+                                    onChange={(dates) => {
+                                        const [start, end] = dates;
+                                        setTripStartDate(start ? start.toISOString().split('T')[0] : '');
+                                        setTripEndDate(end ? end.toISOString().split('T')[0] : '');
+                                    }}
+                                    startDate={tripStartDate ? new Date(tripStartDate) : null}
+                                    endDate={tripEndDate ? new Date(tripEndDate) : null}
+                                    selectsRange
+                                    placeholderText="Select start and end dates"
+                                    className="bg-transparent border-none text-white focus:outline-none w-48 text-center font-mono cursor-pointer"
+                                    dateFormat="yyyy-MM-dd"
+                                    isClearable
+                                />
+                            </div>
+                        ) : (
+                            (place.article?.tripStartDate && place.article?.tripEndDate) ? (
+                                <span className="flex items-center gap-1 bg-[var(--bg-secondary)] px-3 py-1 rounded-full text-sm border border-[var(--glass-border)]">
+                                    <Calendar size={14} /> {place.article.tripStartDate} — {place.article.tripEndDate}
+                                </span>
+                            ) : (
+                                <span className="flex items-center gap-1 bg-[var(--bg-secondary)] px-3 py-1 rounded-full text-sm border border-[var(--glass-border)]">
+                                    <Calendar size={14} /> {place.startDate} — {place.endDate}
+                                </span>
+                            )
+                        )}
                     </motion.div>
                     
                     {isEditing ? (
