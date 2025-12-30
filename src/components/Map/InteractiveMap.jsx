@@ -299,13 +299,9 @@ const InteractiveMap = ({ onCountryClick }) => {
 
                     {/* Visited Places Markers (Story Style) */}
                     {groupedPlaces.map((group) => {
-                        // Generate a robust key based on the images of the top stories
-                        // We use JSON.stringify to capture all relevant state changes
-                        const storiesState = group.stories.slice(0, 3).map(s => ({
-                            id: s.id,
-                            img: s.article?.coverImage || s.coverImage || s.logs?.[0]?.image || 'default'
-                        }));
-                        const markerKey = `${group.id}-${JSON.stringify(storiesState)}`;
+                        // Use a stable key based on group ID and count
+                        // We avoid JSON.stringify on the images to prevent performance issues with large base64 strings
+                        const markerKey = `group-${group.id}-${group.stories.length}`;
 
                         return (
                         <Marker

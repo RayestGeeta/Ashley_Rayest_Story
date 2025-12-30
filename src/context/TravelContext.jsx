@@ -129,23 +129,43 @@ export const TravelProvider = ({ children }) => {
     };
 
     useEffect(() => {
-        localStorage.setItem('travel_blog_places', JSON.stringify(visitedPlaces));
+        try {
+            localStorage.setItem('travel_blog_places', JSON.stringify(visitedPlaces));
+        } catch (e) {
+            console.warn('Failed to save visitedPlaces to localStorage (likely quota exceeded):', e);
+        }
     }, [visitedPlaces]);
 
     useEffect(() => {
-        localStorage.setItem('travel_blog_markers', JSON.stringify(calendarMarkers));
+        try {
+            localStorage.setItem('travel_blog_markers', JSON.stringify(calendarMarkers));
+        } catch (e) {
+            console.warn('Failed to save calendarMarkers to localStorage:', e);
+        }
     }, [calendarMarkers]);
 
     useEffect(() => {
-        localStorage.setItem('travel_blog_future_plans', JSON.stringify(futurePlans));
+        try {
+            localStorage.setItem('travel_blog_future_plans', JSON.stringify(futurePlans));
+        } catch (e) {
+            console.warn('Failed to save futurePlans to localStorage:', e);
+        }
     }, [futurePlans]);
 
     useEffect(() => {
-        localStorage.setItem('travel_blog_calendar_notes', JSON.stringify(calendarNotes));
+        try {
+            localStorage.setItem('travel_blog_calendar_notes', JSON.stringify(calendarNotes));
+        } catch (e) {
+            console.warn('Failed to save calendarNotes to localStorage:', e);
+        }
     }, [calendarNotes]);
 
     useEffect(() => {
-        localStorage.setItem('travel_blog_custom_emojis', JSON.stringify(customEmojis));
+        try {
+            localStorage.setItem('travel_blog_custom_emojis', JSON.stringify(customEmojis));
+        } catch (e) {
+            console.warn('Failed to save customEmojis to localStorage:', e);
+        }
     }, [customEmojis]);
 
     const addPlace = (place) => {

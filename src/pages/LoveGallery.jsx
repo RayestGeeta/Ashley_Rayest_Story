@@ -217,7 +217,13 @@ const LoveGallery = () => {
 
     // Sync state with imported data when it changes (HMR or subsequent loads)
     useEffect(() => {
+        // Only run if photos is empty (first load) or if HMR updates the JSON
         if (galleryDataJSON && galleryDataJSON.length > 0) {
+            // Check if we already have these photos to avoid loop
+            if (photos.length === galleryDataJSON.length && photos[0]?.id === galleryDataJSON[0]?.id) {
+                return;
+            }
+            
             const loadedPhotos = galleryDataJSON.map(p => ({
                 ...p,
                 date: p.date ? new Date(p.date) : new Date(),
