@@ -1,79 +1,883 @@
 [
-  {"name": "北京", "en_name": "Beijing", "country": "中国", "province": "北京", "lat": 39.9042, "lng": 116.4074},
-  {"name": "上海", "en_name": "Shanghai", "country": "中国", "province": "上海", "lat": 31.2304, "lng": 121.4737},
-  {"name": "广州", "en_name": "Guangzhou", "country": "中国", "province": "广东", "lat": 23.1291, "lng": 113.2644},
-  {"name": "深圳", "en_name": "Shenzhen", "country": "中国", "province": "广东", "lat": 22.5431, "lng": 114.0579},
-  {"name": "成都", "en_name": "Chengdu", "country": "中国", "province": "四川", "lat": 30.5728, "lng": 104.0668},
-  {"name": "杭州", "en_name": "Hangzhou", "country": "中国", "province": "浙江", "lat": 30.2741, "lng": 120.1551},
-  {"name": "西安", "en_name": "Xi'an", "country": "中国", "province": "陕西", "lat": 34.3416, "lng": 108.9398},
-  {"name": "重庆", "en_name": "Chongqing", "country": "中国", "province": "重庆", "lat": 29.5630, "lng": 106.5516},
-  {"name": "武汉", "en_name": "Wuhan", "country": "中国", "province": "湖北", "lat": 30.5928, "lng": 114.3055},
-  {"name": "南京", "en_name": "Nanjing", "country": "中国", "province": "江苏", "lat": 32.0603, "lng": 118.7969},
-  {"name": "香港", "en_name": "Hong Kong", "country": "中国", "province": "香港", "lat": 22.3193, "lng": 114.1694},
-  {"name": "澳门", "en_name": "Macau", "country": "中国", "province": "澳门", "lat": 22.1987, "lng": 113.5439},
-  {"name": "台北", "en_name": "Taipei", "country": "中国台湾", "province": "台湾", "lat": 25.0330, "lng": 121.5654},
-  {"name": "哈尔滨", "en_name": "Harbin", "country": "中国", "province": "黑龙江", "lat": 45.8038, "lng": 126.5349},
-  {"name": "乌镇", "en_name": "Wuzhen", "country": "中国", "province": "浙江", "lat": 30.7481, "lng": 120.4851},
-  {"name": "长沙", "en_name": "Changsha", "country": "中国", "province": "湖南", "lat": 28.2282, "lng": 112.9388},
-  {"name": "苏州", "en_name": "Suzhou", "country": "中国", "province": "江苏", "lat": 31.2989, "lng": 120.5853},
-  {"name": "青岛", "en_name": "Qingdao", "country": "中国", "province": "山东", "lat": 36.0671, "lng": 120.3826},
-  {"name": "大理", "en_name": "Dali", "country": "中国", "province": "云南", "lat": 25.6065, "lng": 100.2676},
-  {"name": "丽江", "en_name": "Lijiang", "country": "中国", "province": "云南", "lat": 26.8550, "lng": 100.2276},
-  {"name": "厦门", "en_name": "Xiamen", "country": "中国", "province": "福建", "lat": 24.4798, "lng": 118.0894},
-  {"name": "三亚", "en_name": "Sanya", "country": "中国", "province": "海南", "lat": 18.2528, "lng": 109.5119},
-  {"name": "东京", "en_name": "Tokyo", "country": "日本", "lat": 35.6762, "lng": 139.6503},
-  {"name": "大阪", "en_name": "Osaka", "country": "日本", "lat": 34.6937, "lng": 135.5023},
-  {"name": "京都", "en_name": "Kyoto", "country": "日本", "lat": 35.0116, "lng": 135.7681},
-  {"name": "首尔", "en_name": "Seoul", "country": "韩国", "lat": 37.5665, "lng": 126.9780},
-  {"name": "曼谷", "en_name": "Bangkok", "country": "泰国", "lat": 13.7563, "lng": 100.5018},
-  {"name": "清迈", "en_name": "Chiang Mai", "country": "泰国", "lat": 18.7883, "lng": 98.9853},
-  {"name": "普吉岛", "en_name": "Phuket", "country": "泰国", "lat": 7.8804, "lng": 98.3923},
-  {"name": "新加坡", "en_name": "Singapore", "country": "新加坡", "lat": 1.3521, "lng": 103.8198},
-  {"name": "吉隆坡", "en_name": "Kuala Lumpur", "country": "马来西亚", "lat": 3.1390, "lng": 101.6869},
-  {"name": "胡志明市", "en_name": "Ho Chi Minh City", "country": "越南", "lat": 10.8231, "lng": 106.6297},
-  {"name": "河内", "en_name": "Hanoi", "country": "越南", "lat": 21.0285, "lng": 105.8542},
-  {"name": "巴厘岛", "en_name": "Bali", "country": "印度尼西亚", "lat": -8.4095, "lng": 115.1889},
-  {"name": "悉尼", "en_name": "Sydney", "country": "澳大利亚", "lat": -33.8688, "lng": 151.2093},
-  {"name": "墨尔本", "en_name": "Melbourne", "country": "澳大利亚", "lat": -37.8136, "lng": 144.9631},
-  {"name": "奥克兰", "en_name": "Auckland", "country": "新西兰", "lat": -36.8485, "lng": 174.7633},
-  {"name": "伦敦", "en_name": "London", "country": "英国", "lat": 51.5074, "lng": -0.1278},
-  {"name": "巴黎", "en_name": "Paris", "country": "法国", "lat": 48.8566, "lng": 2.3522},
-  {"name": "柏林", "en_name": "Berlin", "country": "德国", "lat": 52.5200, "lng": 13.4050},
-  {"name": "慕尼黑", "en_name": "Munich", "country": "德国", "lat": 48.1351, "lng": 11.5820},
-  {"name": "罗马", "en_name": "Rome", "country": "意大利", "lat": 41.9028, "lng": 12.4964},
-  {"name": "米兰", "en_name": "Milan", "country": "意大利", "lat": 45.4642, "lng": 9.1900},
-  {"name": "威尼斯", "en_name": "Venice", "country": "意大利", "lat": 45.4408, "lng": 12.3155},
-  {"name": "巴塞罗那", "en_name": "Barcelona", "country": "西班牙", "lat": 41.3851, "lng": 2.1734},
-  {"name": "马德里", "en_name": "Madrid", "country": "西班牙", "lat": 40.4168, "lng": -3.7038},
-  {"name": "阿姆斯特丹", "en_name": "Amsterdam", "country": "荷兰", "lat": 52.3676, "lng": 4.9041},
-  {"name": "苏黎世", "en_name": "Zurich", "country": "瑞士", "lat": 47.3769, "lng": 8.5417},
-  {"name": "日内瓦", "en_name": "Geneva", "country": "瑞士", "lat": 46.2044, "lng": 6.1432},
-  {"name": "维也纳", "en_name": "Vienna", "country": "奥地利", "lat": 48.2082, "lng": 16.3738},
-  {"name": "布拉格", "en_name": "Prague", "country": "捷克", "lat": 50.0755, "lng": 14.4378},
-  {"name": "布达佩斯", "en_name": "Budapest", "country": "匈牙利", "lat": 47.4979, "lng": 19.0402},
-  {"name": "伊斯坦布尔", "en_name": "Istanbul", "country": "土耳其", "lat": 41.0082, "lng": 28.9784},
-  {"name": "迪拜", "en_name": "Dubai", "country": "阿联酋", "lat": 25.2048, "lng": 55.2708},
-  {"name": "纽约", "en_name": "New York", "country": "美国", "lat": 40.7128, "lng": -74.0060},
-  {"name": "洛杉矶", "en_name": "Los Angeles", "country": "美国", "lat": 34.0522, "lng": -118.2437},
-  {"name": "旧金山", "en_name": "San Francisco", "country": "美国", "lat": 37.7749, "lng": -122.4194},
-  {"name": "拉斯维加斯", "en_name": "Las Vegas", "country": "美国", "lat": 36.1699, "lng": -115.1398},
-  {"name": "西雅图", "en_name": "Seattle", "country": "美国", "lat": 47.6062, "lng": -122.3321},
-  {"name": "芝加哥", "en_name": "Chicago", "country": "美国", "lat": 41.8781, "lng": -87.6298},
-  {"name": "多伦多", "en_name": "Toronto", "country": "加拿大", "lat": 43.6510, "lng": -79.3470},
-  {"name": "温哥华", "en_name": "Vancouver", "country": "加拿大", "lat": 49.2827, "lng": -123.1207},
-  {"name": "墨西哥城", "en_name": "Mexico City", "country": "墨西哥", "lat": 19.4326, "lng": -99.1332},
-  {"name": "里约热内卢", "en_name": "Rio de Janeiro", "country": "巴西", "lat": -22.9068, "lng": -43.1729},
-  {"name": "圣保罗", "en_name": "Sao Paulo", "country": "巴西", "lat": -23.5505, "lng": -46.6333},
-  {"name": "布宜诺斯艾利斯", "en_name": "Buenos Aires", "country": "阿根廷", "lat": -34.6037, "lng": -58.3816},
-  {"name": "开罗", "en_name": "Cairo", "country": "埃及", "lat": 30.0444, "lng": 31.2357},
-  {"name": "开普敦", "en_name": "Cape Town", "country": "南非", "lat": -33.9249, "lng": 18.4241},
-  {"name": "莫斯科", "en_name": "Moscow", "country": "俄罗斯", "lat": 55.7558, "lng": 37.6173},
-  {"name": "圣彼得堡", "en_name": "Saint Petersburg", "country": "俄罗斯", "lat": 59.9343, "lng": 30.3351},
-  {"name": "雷克雅未克", "en_name": "Reykjavik", "country": "冰岛", "lat": 64.1466, "lng": -21.9426},
-  {"name": "奥斯陆", "en_name": "Oslo", "country": "挪威", "lat": 59.9139, "lng": 10.7522},
-  {"name": "斯德哥尔摩", "en_name": "Stockholm", "country": "瑞典", "lat": 59.3293, "lng": 18.0686},
-  {"name": "哥本哈根", "en_name": "Copenhagen", "country": "丹麦", "lat": 55.6761, "lng": 12.5683},
-  {"name": "赫尔辛基", "en_name": "Helsinki", "country": "芬兰", "lat": 60.1699, "lng": 24.9384},
-  {"name": "里斯本", "en_name": "Lisbon", "country": "葡萄牙", "lat": 38.7223, "lng": -9.1393},
-  {"name": "雅典", "en_name": "Athens", "country": "希腊", "lat": 37.9838, "lng": 23.7275}
+  {
+    "name": "北京",
+    "en_name": "Beijing",
+    "country": "中国",
+    "province": "北京",
+    "lat": 39.9042,
+    "lng": 116.4074
+  },
+  {
+    "name": "上海",
+    "en_name": "Shanghai",
+    "country": "中国",
+    "province": "上海",
+    "lat": 31.2304,
+    "lng": 121.4737
+  },
+  {
+    "name": "广州",
+    "en_name": "Guangzhou",
+    "country": "中国",
+    "province": "广东",
+    "lat": 23.1291,
+    "lng": 113.2644
+  },
+  {
+    "name": "深圳",
+    "en_name": "Shenzhen",
+    "country": "中国",
+    "province": "广东",
+    "lat": 22.5431,
+    "lng": 114.0579
+  },
+  {
+    "name": "成都",
+    "en_name": "Chengdu",
+    "country": "中国",
+    "province": "四川",
+    "lat": 30.5728,
+    "lng": 104.0668
+  },
+  {
+    "name": "杭州",
+    "en_name": "Hangzhou",
+    "country": "中国",
+    "province": "浙江",
+    "lat": 30.2741,
+    "lng": 120.1551
+  },
+  {
+    "name": "西安",
+    "en_name": "Xi'an",
+    "country": "中国",
+    "province": "陕西",
+    "lat": 34.3416,
+    "lng": 108.9398
+  },
+  {
+    "name": "重庆",
+    "en_name": "Chongqing",
+    "country": "中国",
+    "province": "重庆",
+    "lat": 29.563,
+    "lng": 106.5516
+  },
+  {
+    "name": "武汉",
+    "en_name": "Wuhan",
+    "country": "中国",
+    "province": "湖北",
+    "lat": 30.5928,
+    "lng": 114.3055
+  },
+  {
+    "name": "南京",
+    "en_name": "Nanjing",
+    "country": "中国",
+    "province": "江苏",
+    "lat": 32.0603,
+    "lng": 118.7969
+  },
+  {
+    "name": "香港",
+    "en_name": "Hong Kong",
+    "country": "中国",
+    "province": "香港",
+    "lat": 22.3193,
+    "lng": 114.1694
+  },
+  {
+    "name": "澳门",
+    "en_name": "Macau",
+    "country": "中国",
+    "province": "澳门",
+    "lat": 22.1987,
+    "lng": 113.5439
+  },
+  {
+    "name": "台北",
+    "en_name": "Taipei",
+    "country": "中国台湾",
+    "province": "台湾",
+    "lat": 25.033,
+    "lng": 121.5654
+  },
+  {
+    "name": "哈尔滨",
+    "en_name": "Harbin",
+    "country": "中国",
+    "province": "黑龙江",
+    "lat": 45.8038,
+    "lng": 126.5349
+  },
+  {
+    "name": "乌镇",
+    "en_name": "Wuzhen",
+    "country": "中国",
+    "province": "浙江",
+    "lat": 30.7481,
+    "lng": 120.4851
+  },
+  {
+    "name": "长沙",
+    "en_name": "Changsha",
+    "country": "中国",
+    "province": "湖南",
+    "lat": 28.2282,
+    "lng": 112.9388
+  },
+  {
+    "name": "苏州",
+    "en_name": "Suzhou",
+    "country": "中国",
+    "province": "江苏",
+    "lat": 31.2989,
+    "lng": 120.5853
+  },
+  {
+    "name": "青岛",
+    "en_name": "Qingdao",
+    "country": "中国",
+    "province": "山东",
+    "lat": 36.0671,
+    "lng": 120.3826
+  },
+  {
+    "name": "大理",
+    "en_name": "Dali",
+    "country": "中国",
+    "province": "云南",
+    "lat": 25.6065,
+    "lng": 100.2676
+  },
+  {
+    "name": "丽江",
+    "en_name": "Lijiang",
+    "country": "中国",
+    "province": "云南",
+    "lat": 26.855,
+    "lng": 100.2276
+  },
+  {
+    "name": "厦门",
+    "en_name": "Xiamen",
+    "country": "中国",
+    "province": "福建",
+    "lat": 24.4798,
+    "lng": 118.0894
+  },
+  {
+    "name": "三亚",
+    "en_name": "Sanya",
+    "country": "中国",
+    "province": "海南",
+    "lat": 18.2528,
+    "lng": 109.5119
+  },
+  {
+    "name": "东京",
+    "en_name": "Tokyo",
+    "country": "日本",
+    "lat": 35.6762,
+    "lng": 139.6503
+  },
+  {
+    "name": "大阪",
+    "en_name": "Osaka",
+    "country": "日本",
+    "lat": 34.6937,
+    "lng": 135.5023
+  },
+  {
+    "name": "京都",
+    "en_name": "Kyoto",
+    "country": "日本",
+    "lat": 35.0116,
+    "lng": 135.7681
+  },
+  {
+    "name": "首尔",
+    "en_name": "Seoul",
+    "country": "韩国",
+    "lat": 37.5665,
+    "lng": 126.978
+  },
+  {
+    "name": "曼谷",
+    "en_name": "Bangkok",
+    "country": "泰国",
+    "lat": 13.7563,
+    "lng": 100.5018
+  },
+  {
+    "name": "清迈",
+    "en_name": "Chiang Mai",
+    "country": "泰国",
+    "lat": 18.7883,
+    "lng": 98.9853
+  },
+  {
+    "name": "普吉岛",
+    "en_name": "Phuket",
+    "country": "泰国",
+    "lat": 7.8804,
+    "lng": 98.3923
+  },
+  {
+    "name": "新加坡",
+    "en_name": "Singapore",
+    "country": "新加坡",
+    "lat": 1.3521,
+    "lng": 103.8198
+  },
+  {
+    "name": "吉隆坡",
+    "en_name": "Kuala Lumpur",
+    "country": "马来西亚",
+    "lat": 3.139,
+    "lng": 101.6869
+  },
+  {
+    "name": "胡志明市",
+    "en_name": "Ho Chi Minh City",
+    "country": "越南",
+    "lat": 10.8231,
+    "lng": 106.6297
+  },
+  {
+    "name": "河内",
+    "en_name": "Hanoi",
+    "country": "越南",
+    "lat": 21.0285,
+    "lng": 105.8542
+  },
+  {
+    "name": "巴厘岛",
+    "en_name": "Bali",
+    "country": "印度尼西亚",
+    "lat": -8.4095,
+    "lng": 115.1889
+  },
+  {
+    "name": "悉尼",
+    "en_name": "Sydney",
+    "country": "澳大利亚",
+    "lat": -33.8688,
+    "lng": 151.2093
+  },
+  {
+    "name": "墨尔本",
+    "en_name": "Melbourne",
+    "country": "澳大利亚",
+    "lat": -37.8136,
+    "lng": 144.9631
+  },
+  {
+    "name": "奥克兰",
+    "en_name": "Auckland",
+    "country": "新西兰",
+    "lat": -36.8485,
+    "lng": 174.7633
+  },
+  {
+    "name": "伦敦",
+    "en_name": "London",
+    "country": "英国",
+    "lat": 51.5074,
+    "lng": -0.1278
+  },
+  {
+    "name": "巴黎",
+    "en_name": "Paris",
+    "country": "法国",
+    "lat": 48.8566,
+    "lng": 2.3522
+  },
+  {
+    "name": "柏林",
+    "en_name": "Berlin",
+    "country": "德国",
+    "lat": 52.52,
+    "lng": 13.405
+  },
+  {
+    "name": "慕尼黑",
+    "en_name": "Munich",
+    "country": "德国",
+    "lat": 48.1351,
+    "lng": 11.582
+  },
+  {
+    "name": "罗马",
+    "en_name": "Rome",
+    "country": "意大利",
+    "lat": 41.9028,
+    "lng": 12.4964
+  },
+  {
+    "name": "米兰",
+    "en_name": "Milan",
+    "country": "意大利",
+    "lat": 45.4642,
+    "lng": 9.19
+  },
+  {
+    "name": "威尼斯",
+    "en_name": "Venice",
+    "country": "意大利",
+    "lat": 45.4408,
+    "lng": 12.3155
+  },
+  {
+    "name": "巴塞罗那",
+    "en_name": "Barcelona",
+    "country": "西班牙",
+    "lat": 41.3851,
+    "lng": 2.1734
+  },
+  {
+    "name": "马德里",
+    "en_name": "Madrid",
+    "country": "西班牙",
+    "lat": 40.4168,
+    "lng": -3.7038
+  },
+  {
+    "name": "阿姆斯特丹",
+    "en_name": "Amsterdam",
+    "country": "荷兰",
+    "lat": 52.3676,
+    "lng": 4.9041
+  },
+  {
+    "name": "苏黎世",
+    "en_name": "Zurich",
+    "country": "瑞士",
+    "lat": 47.3769,
+    "lng": 8.5417
+  },
+  {
+    "name": "日内瓦",
+    "en_name": "Geneva",
+    "country": "瑞士",
+    "lat": 46.2044,
+    "lng": 6.1432
+  },
+  {
+    "name": "维也纳",
+    "en_name": "Vienna",
+    "country": "奥地利",
+    "lat": 48.2082,
+    "lng": 16.3738
+  },
+  {
+    "name": "布拉格",
+    "en_name": "Prague",
+    "country": "捷克",
+    "lat": 50.0755,
+    "lng": 14.4378
+  },
+  {
+    "name": "布达佩斯",
+    "en_name": "Budapest",
+    "country": "匈牙利",
+    "lat": 47.4979,
+    "lng": 19.0402
+  },
+  {
+    "name": "伊斯坦布尔",
+    "en_name": "Istanbul",
+    "country": "土耳其",
+    "lat": 41.0082,
+    "lng": 28.9784
+  },
+  {
+    "name": "迪拜",
+    "en_name": "Dubai",
+    "country": "阿联酋",
+    "lat": 25.2048,
+    "lng": 55.2708
+  },
+  {
+    "name": "纽约",
+    "en_name": "New York",
+    "country": "美国",
+    "lat": 40.7128,
+    "lng": -74.006
+  },
+  {
+    "name": "洛杉矶",
+    "en_name": "Los Angeles",
+    "country": "美国",
+    "lat": 34.0522,
+    "lng": -118.2437
+  },
+  {
+    "name": "旧金山",
+    "en_name": "San Francisco",
+    "country": "美国",
+    "lat": 37.7749,
+    "lng": -122.4194
+  },
+  {
+    "name": "拉斯维加斯",
+    "en_name": "Las Vegas",
+    "country": "美国",
+    "lat": 36.1699,
+    "lng": -115.1398
+  },
+  {
+    "name": "西雅图",
+    "en_name": "Seattle",
+    "country": "美国",
+    "lat": 47.6062,
+    "lng": -122.3321
+  },
+  {
+    "name": "芝加哥",
+    "en_name": "Chicago",
+    "country": "美国",
+    "lat": 41.8781,
+    "lng": -87.6298
+  },
+  {
+    "name": "多伦多",
+    "en_name": "Toronto",
+    "country": "加拿大",
+    "lat": 43.651,
+    "lng": -79.347
+  },
+  {
+    "name": "温哥华",
+    "en_name": "Vancouver",
+    "country": "加拿大",
+    "lat": 49.2827,
+    "lng": -123.1207
+  },
+  {
+    "name": "墨西哥城",
+    "en_name": "Mexico City",
+    "country": "墨西哥",
+    "lat": 19.4326,
+    "lng": -99.1332
+  },
+  {
+    "name": "里约热内卢",
+    "en_name": "Rio de Janeiro",
+    "country": "巴西",
+    "lat": -22.9068,
+    "lng": -43.1729
+  },
+  {
+    "name": "圣保罗",
+    "en_name": "Sao Paulo",
+    "country": "巴西",
+    "lat": -23.5505,
+    "lng": -46.6333
+  },
+  {
+    "name": "布宜诺斯艾利斯",
+    "en_name": "Buenos Aires",
+    "country": "阿根廷",
+    "lat": -34.6037,
+    "lng": -58.3816
+  },
+  {
+    "name": "开罗",
+    "en_name": "Cairo",
+    "country": "埃及",
+    "lat": 30.0444,
+    "lng": 31.2357
+  },
+  {
+    "name": "开普敦",
+    "en_name": "Cape Town",
+    "country": "南非",
+    "lat": -33.9249,
+    "lng": 18.4241
+  },
+  {
+    "name": "莫斯科",
+    "en_name": "Moscow",
+    "country": "俄罗斯",
+    "lat": 55.7558,
+    "lng": 37.6173
+  },
+  {
+    "name": "圣彼得堡",
+    "en_name": "Saint Petersburg",
+    "country": "俄罗斯",
+    "lat": 59.9343,
+    "lng": 30.3351
+  },
+  {
+    "name": "雷克雅未克",
+    "en_name": "Reykjavik",
+    "country": "冰岛",
+    "lat": 64.1466,
+    "lng": -21.9426
+  },
+  {
+    "name": "奥斯陆",
+    "en_name": "Oslo",
+    "country": "挪威",
+    "lat": 59.9139,
+    "lng": 10.7522
+  },
+  {
+    "name": "斯德哥尔摩",
+    "en_name": "Stockholm",
+    "country": "瑞典",
+    "lat": 59.3293,
+    "lng": 18.0686
+  },
+  {
+    "name": "哥本哈根",
+    "en_name": "Copenhagen",
+    "country": "丹麦",
+    "lat": 55.6761,
+    "lng": 12.5683
+  },
+  {
+    "name": "赫尔辛基",
+    "en_name": "Helsinki",
+    "country": "芬兰",
+    "lat": 60.1699,
+    "lng": 24.9384
+  },
+  {
+    "name": "里斯本",
+    "en_name": "Lisbon",
+    "country": "葡萄牙",
+    "lat": 38.7223,
+    "lng": -9.1393
+  },
+  {
+    "name": "雅典",
+    "en_name": "Athens",
+    "country": "希腊",
+    "lat": 37.9838,
+    "lng": 23.7275
+  },
+  {
+    "name": "桂林",
+    "en_name": "Guilin",
+    "country": "中国",
+    "province": "广西",
+    "lat": 25.2345,
+    "lng": 110.18
+  },
+  {
+    "name": "阳朔",
+    "en_name": "Yangshuo",
+    "country": "中国",
+    "province": "广西",
+    "lat": 24.7765,
+    "lng": 110.4922
+  },
+  {
+    "name": "南宁",
+    "en_name": "Nanning",
+    "country": "中国",
+    "province": "广西",
+    "lat": 22.817,
+    "lng": 108.3665
+  },
+  {
+    "name": "北海",
+    "en_name": "Beihai",
+    "country": "中国",
+    "province": "广西",
+    "lat": 21.4812,
+    "lng": 109.1192
+  },
+  {
+    "name": "昆明",
+    "en_name": "Kunming",
+    "country": "中国",
+    "province": "云南",
+    "lat": 24.8801,
+    "lng": 102.8329
+  },
+  {
+    "name": "香格里拉",
+    "en_name": "Shangri-La",
+    "country": "中国",
+    "province": "云南",
+    "lat": 27.8288,
+    "lng": 99.7071
+  },
+  {
+    "name": "西双版纳",
+    "en_name": "Xishuangbanna",
+    "country": "中国",
+    "province": "云南",
+    "lat": 22.0076,
+    "lng": 100.7972
+  },
+  {
+    "name": "海口",
+    "en_name": "Haikou",
+    "country": "中国",
+    "province": "海南",
+    "lat": 20.0174,
+    "lng": 110.3492
+  },
+  {
+    "name": "福州",
+    "en_name": "Fuzhou",
+    "country": "中国",
+    "province": "福建",
+    "lat": 26.0745,
+    "lng": 119.2965
+  },
+  {
+    "name": "泉州",
+    "en_name": "Quanzhou",
+    "country": "中国",
+    "province": "福建",
+    "lat": 24.8741,
+    "lng": 118.6757
+  },
+  {
+    "name": "张家界",
+    "en_name": "Zhangjiajie",
+    "country": "中国",
+    "province": "湖南",
+    "lat": 29.117,
+    "lng": 110.4792
+  },
+  {
+    "name": "凤凰古城",
+    "en_name": "Fenghuang",
+    "country": "中国",
+    "province": "湖南",
+    "lat": 27.9488,
+    "lng": 109.605
+  },
+  {
+    "name": "黄山",
+    "en_name": "Huangshan",
+    "country": "中国",
+    "province": "安徽",
+    "lat": 29.7147,
+    "lng": 118.3375
+  },
+  {
+    "name": "合肥",
+    "en_name": "Hefei",
+    "country": "中国",
+    "province": "安徽",
+    "lat": 31.8206,
+    "lng": 117.2272
+  },
+  {
+    "name": "拉萨",
+    "en_name": "Lhasa",
+    "country": "中国",
+    "province": "西藏",
+    "lat": 29.6525,
+    "lng": 91.1721
+  },
+  {
+    "name": "林芝",
+    "en_name": "Nyingchi",
+    "country": "中国",
+    "province": "西藏",
+    "lat": 29.6456,
+    "lng": 94.3615
+  },
+  {
+    "name": "西宁",
+    "en_name": "Xining",
+    "country": "中国",
+    "province": "青海",
+    "lat": 36.6171,
+    "lng": 101.7782
+  },
+  {
+    "name": "兰州",
+    "en_name": "Lanzhou",
+    "country": "中国",
+    "province": "甘肃",
+    "lat": 36.0611,
+    "lng": 103.8343
+  },
+  {
+    "name": "敦煌",
+    "en_name": "Dunhuang",
+    "country": "中国",
+    "province": "甘肃",
+    "lat": 40.1421,
+    "lng": 94.662
+  },
+  {
+    "name": "贵阳",
+    "en_name": "Guiyang",
+    "country": "中国",
+    "province": "贵州",
+    "lat": 26.6477,
+    "lng": 106.6302
+  },
+  {
+    "name": "珠海",
+    "en_name": "Zhuhai",
+    "country": "中国",
+    "province": "广东",
+    "lat": 22.2707,
+    "lng": 113.5767
+  },
+  {
+    "name": "郑州",
+    "en_name": "Zhengzhou",
+    "country": "中国",
+    "province": "河南",
+    "lat": 34.7466,
+    "lng": 113.6253
+  },
+  {
+    "name": "洛阳",
+    "en_name": "Luoyang",
+    "country": "中国",
+    "province": "河南",
+    "lat": 34.6181,
+    "lng": 112.454
+  },
+  {
+    "name": "开封",
+    "en_name": "Kaifeng",
+    "country": "中国",
+    "province": "河南",
+    "lat": 34.7972,
+    "lng": 114.3076
+  },
+  {
+    "name": "济南",
+    "en_name": "Jinan",
+    "country": "中国",
+    "province": "山东",
+    "lat": 36.6512,
+    "lng": 117.1201
+  },
+  {
+    "name": "太原",
+    "en_name": "Taiyuan",
+    "country": "中国",
+    "province": "山西",
+    "lat": 37.8706,
+    "lng": 112.5489
+  },
+  {
+    "name": "大同",
+    "en_name": "Datong",
+    "country": "中国",
+    "province": "山西",
+    "lat": 40.0768,
+    "lng": 113.3001
+  },
+  {
+    "name": "石家庄",
+    "en_name": "Shijiazhuang",
+    "country": "中国",
+    "province": "河北",
+    "lat": 38.0428,
+    "lng": 114.5149
+  },
+  {
+    "name": "南昌",
+    "en_name": "Nanchang",
+    "country": "中国",
+    "province": "江西",
+    "lat": 28.682,
+    "lng": 115.8579
+  },
+  {
+    "name": "景德镇",
+    "en_name": "Jingdezhen",
+    "country": "中国",
+    "province": "江西",
+    "lat": 29.2941,
+    "lng": 117.2075
+  },
+  {
+    "name": "呼和浩特",
+    "en_name": "Hohhot",
+    "country": "中国",
+    "province": "内蒙古",
+    "lat": 40.8426,
+    "lng": 111.7511
+  },
+  {
+    "name": "乌鲁木齐",
+    "en_name": "Urumqi",
+    "country": "中国",
+    "province": "新疆",
+    "lat": 43.8256,
+    "lng": 87.6168
+  },
+  {
+    "name": "喀什",
+    "en_name": "Kashgar",
+    "country": "中国",
+    "province": "新疆",
+    "lat": 39.4704,
+    "lng": 75.9898
+  },
+  {
+    "name": "伊犁",
+    "en_name": "Yili",
+    "country": "中国",
+    "province": "新疆",
+    "lat": 43.9168,
+    "lng": 81.3241
+  },
+  {
+    "name": "银川",
+    "en_name": "Yinchuan",
+    "country": "中国",
+    "province": "宁夏",
+    "lat": 38.4872,
+    "lng": 106.2309
+  },
+  {
+    "name": "长春",
+    "en_name": "Changchun",
+    "country": "中国",
+    "province": "吉林",
+    "lat": 43.8171,
+    "lng": 125.3235
+  },
+  {
+    "name": "延吉",
+    "en_name": "Yanji",
+    "country": "中国",
+    "province": "吉林",
+    "lat": 42.9068,
+    "lng": 129.5076
+  },
+  {
+    "name": "沈阳",
+    "en_name": "Shenyang",
+    "country": "中国",
+    "province": "辽宁",
+    "lat": 41.8057,
+    "lng": 123.4315
+  },
+  {
+    "name": "大连",
+    "en_name": "Dalian",
+    "country": "中国",
+    "province": "辽宁",
+    "lat": 38.914,
+    "lng": 121.6147
+  },
+  {
+    "name": "天津",
+    "en_name": "Tianjin",
+    "country": "中国",
+    "province": "天津",
+    "lat": 39.0842,
+    "lng": 117.2008
+  }
 ]

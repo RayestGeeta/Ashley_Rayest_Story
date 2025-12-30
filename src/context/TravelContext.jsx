@@ -67,15 +67,15 @@ export const TravelProvider = ({ children }) => {
     });
 
     // Save to disk function
-    const saveToDisk = async () => {
+    const saveToDisk = async (overrides = {}) => {
         if (!IS_EDIT_MODE) return;
         
         try {
             const data = {
-                visitedPlaces,
-                futurePlans,
-                calendarMarkers,
-                calendarNotes
+                visitedPlaces: overrides.visitedPlaces || visitedPlaces,
+                futurePlans: overrides.futurePlans || futurePlans,
+                calendarMarkers: overrides.calendarMarkers || calendarMarkers,
+                calendarNotes: overrides.calendarNotes || calendarNotes
             };
             
             const response = await fetch('/__api/save', {
@@ -131,6 +131,8 @@ export const TravelProvider = ({ children }) => {
             if (place.id === placeId) {
                 return { 
                     ...place, 
+                    // Sync article cover to root coverImage for consistency across map/lists
+                    coverImage: articleData.coverImage || place.coverImage, 
                     article: { ...place.article, ...articleData } 
                 };
             }

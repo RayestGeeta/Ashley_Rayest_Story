@@ -117,16 +117,28 @@ const InteractiveMap = ({ onCountryClick }) => {
         const isStacked = count > 1;
         const isFocused = group.countryName === focusedCountry;
         
-        // Take top 3 stories
+        // Take top 3 stories (Newest First)
+        // stories[0] is Newest (Should be TOP/FRONT/RIGHT)
+        // stories[1] is Middle
+        // stories[2] is Oldest (Should be BOTTOM/BACK/LEFT)
         const displayStories = stories.slice(0, 3);
-        // Reverse them so the first one in the array (Newest) becomes the last in HTML (Top)
+        
+        // In CSS:
+        // nth-child(1) is BOTTOM of stack (rendered first)
+        // nth-child(3) is TOP of stack (rendered last)
+        
+        // So we need to REVERSE the array for rendering
+        // [Newest, Middle, Oldest] -> [Oldest, Middle, Newest]
+        // HTML: Oldest (child 1), Middle (child 2), Newest (child 3)
+        // Visual Stack: Newest on Top
         const reversedStories = [...displayStories].reverse();
 
         let htmlContent = '';
         
         if (isStacked) {
             const stackHtml = reversedStories.map(story => {
-                const img = story.logs?.[0]?.image || `https://source.unsplash.com/random/100x100?${story.cityName}&sig=${story.id}`;
+                // Use strict priority: article > root > log > default
+                const img = story.article?.coverImage || story.coverImage || story.logs?.[0]?.image || `https://source.unsplash.com/random/100x100?${story.cityName}&sig=${story.id}`;
                 return `
                     <div class="story-ring">
                         <img src="${img}" alt="${story.cityName}" />
@@ -146,7 +158,7 @@ const InteractiveMap = ({ onCountryClick }) => {
             `;
         } else {
             const place = stories[0];
-            const coverImage = place.logs?.[0]?.image || `https://source.unsplash.com/random/100x100?${place.cityName}`;
+            const coverImage = place.article?.coverImage || place.coverImage || place.logs?.[0]?.image || `https://source.unsplash.com/random/100x100?${place.cityName}`;
             htmlContent = `
                 <div class="story-ring-container group">
                     <div class="story-ring">
@@ -283,9 +295,18 @@ const InteractiveMap = ({ onCountryClick }) => {
                     )}
 
                     {/* Visited Places Markers (Story Style) */}
-                    {groupedPlaces.map((group) => (
+                    {groupedPlaces.map((group) => {
+                        // Generate a robust key based on the images of the top stories
+                        // We use JSON.stringify to capture all relevant state changes
+                        const storiesState = group.stories.slice(0, 3).map(s => ({
+                            id: s.id,
+                            img: s.article?.coverImage || s.coverImage || s.logs?.[0]?.image || 'default'
+                        }));
+                        const markerKey = `${group.id}-${JSON.stringify(storiesState)}`;
+
+                        return (
                         <Marker
-                            key={group.id}
+                            key={markerKey}
                             position={[group.lat, group.lng]}
                             icon={createStoryIcon(group)}
                             eventHandlers={{
@@ -309,12 +330,12 @@ const InteractiveMap = ({ onCountryClick }) => {
                                                     onClick={() => navigate(`/post/${story.id}`)}
                                                  >
                                                     <img 
-                                                        src={story.logs?.[0]?.image || `https://source.unsplash.com/random/100x100?${story.cityName}&sig=${story.id}`} 
+                                                        src={story.article?.coverImage || story.coverImage || story.logs?.[0]?.image || `https://source.unsplash.com/random/100x100?${story.cityName}&sig=${story.id}`} 
                                                         className="w-8 h-8 rounded-full object-cover border border-white/20"
                                                         alt=""
                                                     />
                                                     <div className="flex-1 min-w-0">
-                                                        <div className="text-sm font-medium truncate">{story.logs?.[0]?.title || 'Travel Log'}</div>
+                                                        <div className="text-sm font-medium truncate">{story.article?.title || story.cityName}</div>
                                                         <div className="text-xs text-gray-400">{story.date}</div>
                                                     </div>
                                                  </div>
@@ -324,7 +345,8 @@ const InteractiveMap = ({ onCountryClick }) => {
                                 </Popup>
                             )}
                         </Marker>
-                    ))}
+                        );
+                    })}
 
                 </MapContainer>
             </motion.div>

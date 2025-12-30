@@ -6,16 +6,16 @@ import { MapPin, Calendar, ArrowRight } from 'lucide-react';
 const AllPosts = () => {
     const { visitedPlaces } = useTravel();
 
-    // Flatten all logs into a single array
-    const allPosts = visitedPlaces.flatMap(place => 
-        (place.logs || []).map(log => ({
-            ...log,
-            placeId: place.id,
-            cityName: place.cityName,
-            countryName: place.countryName,
-            date: log.date || place.date
-        }))
-    ).sort((a, b) => new Date(b.date) - new Date(a.date));
+    // Use visitedPlaces directly as stories
+    const allPosts = visitedPlaces.map(place => ({
+        placeId: place.id,
+        cityName: place.cityName,
+        countryName: place.countryName,
+        date: place.date || place.startDate || (place.logs?.[0]?.date),
+        title: place.article?.title || `${place.cityName} Trip`,
+        content: place.article?.content || "No story written yet...",
+        image: place.article?.coverImage || place.coverImage || place.logs?.[0]?.image
+    })).sort((a, b) => new Date(b.date) - new Date(a.date));
 
     return (
         <div className="min-h-screen bg-[#021025] text-white p-8 md:p-12 ml-16">

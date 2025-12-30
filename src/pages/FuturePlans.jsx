@@ -77,7 +77,10 @@ const FuturePlans = () => {
 
                 // 1. First search in Chinese dataset
                 const zhResults = worldCitiesZh.filter(city => 
-                    city.name.includes(query) || city.en_name.toLowerCase().startsWith(query)
+                    city.name.includes(query) || 
+                    (city.en_name && city.en_name.toLowerCase().includes(query)) ||
+                    (city.country && city.country.includes(query)) ||
+                    (city.province && city.province.includes(query))
                 ).map((city, index) => ({
                     place_id: `zh-${index}`,
                     name: city.name, // Display Chinese name
@@ -94,9 +97,10 @@ const FuturePlans = () => {
 
                 // 2. If fewer than 20 results, search in English dataset
                 if (results.length < 20) {
-                    const enResults = allCities.filter(city => 
-                        city.name.toLowerCase().startsWith(query)
-                    ).slice(0, 20 - results.length)
+                    const enResults = allCities.filter(city => {
+                        const countryName = (isoToName[city.country] || '').toLowerCase();
+                        return city.name.toLowerCase().includes(query) || countryName.includes(query);
+                    }).slice(0, 20 - results.length)
                     .map((city, index) => ({
                         place_id: `${city.name}-${index}`,
                         name: city.name,

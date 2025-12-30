@@ -15,7 +15,14 @@
           "id": 1766116714878
         }
       ],
-      "id": 1766116706509
+      "id": 1766116706509,
+      "coverImage": "/gallery_images/IMG_20251129_100418.jpg",
+      "article": {
+        "title": "杭州 Trip",
+        "content": "",
+        "coverImage": "/gallery_images/IMG_20251129_100418.jpg",
+        "media": []
+      }
     },
     {
       "cityName": "杭州",
@@ -32,52 +39,99 @@
           "id": 1766116836091
         }
       ],
-      "id": 1766116789013
+      "id": 1766116789013,
+      "coverImage": "/gallery_images/IMG_20251130_151121.jpg",
+      "article": {
+        "title": "杭州 Trip",
+        "content": "",
+        "coverImage": "/gallery_images/IMG_20251130_151121.jpg",
+        "media": []
+      }
     },
     {
-      "cityName": "上海",
+      "cityName": "Suzhou City",
       "countryName": "China",
-      "date": "2025-12-08",
+      "startDate": "2025-11-21",
+      "endDate": "2025-11-22",
+      "lat": 31.311123,
+      "lng": 120.6212881,
+      "coverImage": null,
+      "article": {
+        "title": "苏州",
+        "content": "# Suzhou City, China\n\nStart writing your amazing journey here...\n\nYou can use **Markdown**!\n\n- [ ] Visit key spots\n- [ ] Try local food",
+        "coverImage": "",
+        "media": []
+      },
+      "id": 1767103280726,
+      "logs": []
+    },
+    {
+      "cityName": "Beijing",
+      "countryName": "China",
+      "startDate": "2025-12-09",
+      "endDate": "2025-12-13",
+      "lat": 40.190632,
+      "lng": 116.412144,
+      "coverImage": null,
+      "article": {
+        "title": "北京-251209",
+        "content": "# Beijing, China\n\nStart writing your amazing journey here...\n\nYou can use **Markdown**!\n\n- [ ] Visit key spots\n- [ ] Try local food",
+        "coverImage": "",
+        "media": []
+      },
+      "id": 1767103324008,
+      "logs": []
+    },
+    {
+      "cityName": "Nanjing City",
+      "countryName": "China",
+      "startDate": "2025-12-05",
+      "endDate": "2025-12-06",
+      "lat": 32.0438284,
+      "lng": 118.7788631,
+      "coverImage": null,
+      "article": {
+        "title": "南京-251205",
+        "content": "# Nanjing City, China\n\nStart writing your amazing journey here...\n\nYou can use **Markdown**!\n\n- [ ] Visit key spots\n- [ ] Try local food",
+        "coverImage": "",
+        "media": []
+      },
+      "id": 1767103735923,
+      "logs": []
+    },
+    {
+      "cityName": "Shenzhen",
+      "countryName": "China",
+      "startDate": "2025-12-29",
+      "endDate": "2025-12-29",
+      "lat": 22.5445741,
+      "lng": 114.0545429,
+      "coverImage": null,
+      "article": {
+        "title": "深圳-251230",
+        "content": "# Shenzhen, China\n\nStart writing your amazing journey here...\n\nYou can use **Markdown**!\n\n- [ ] Visit key spots\n- [ ] Try local food",
+        "coverImage": null,
+        "media": []
+      },
+      "id": 1767103786983,
+      "logs": []
+    },
+    {
+      "cityName": "Shanghai",
+      "countryName": "China",
+      "startDate": "2025-11-06",
+      "endDate": "2025-11-08",
       "lat": 31.2312707,
       "lng": 121.4700152,
-      "logs": [
-        {
-          "id": 1766134886157,
-          "title": "12",
-          "content": "22",
-          "image": "https://pic3.zhimg.com/v2-e9b48c7085ed5c7380ec7122c645706e_1440w.jpg",
-          "date": "2025-12-08"
-        }
-      ],
-      "id": 1766134886157
-    },
-    {
-      "cityName": "杭州",
-      "countryName": "China",
-      "date": "2025-12-19",
-      "lat": 30.2489634,
-      "lng": 120.2052342,
-      "logs": [
-        {
-          "id": 1766135141410,
-          "title": "新的一天",
-          "content": "你知道吗",
-          "image": "https://pic1.zhimg.com/v2-f4ff031babfe21da9f114fd1cc0f3048_1440w.jpg",
-          "date": "2025-12-19"
-        }
-      ],
-      "id": 1766135141410
-    },
-    {
-      "cityName": "Hong Kong",
-      "countryName": "China",
-      "startDate": "2025-12-20",
-      "endDate": "2025-12-26",
-      "lat": 22.2792968,
-      "lng": 114.1628907,
       "coverImage": null,
-      "logs": [],
-      "id": 1766495253599
+      "article": {
+        "title": "上海",
+        "content": "# Shanghai, China\n\nStart writing your amazing journey here...\n\nYou can use **Markdown**!\n\n- [ ] Visit key spots\n- [ ] Try local food",
+        "coverImage": null,
+        "media": []
+      },
+      "id": 1767103840592,
+      "logs": []
     }
   ],
   "futurePlans": [
@@ -195,6 +249,124 @@
       "id": 1766944545958,
       "notes": "",
       "nickname": "洛阳"
+    },
+    {
+      "name": "杭州",
+      "country": "中国",
+      "lat": 30.2741,
+      "lng": 120.1551,
+      "full_name": "杭州, 浙江, 中国",
+      "id": 1767093841512,
+      "notes": "",
+      "nickname": "山上露营"
+    },
+    {
+      "name": "东京",
+      "country": "日本",
+      "lat": 35.6762,
+      "lng": 139.6503,
+      "full_name": "东京, 日本",
+      "id": 1767093859026,
+      "notes": ""
+    },
+    {
+      "name": "苏黎世",
+      "country": "瑞士",
+      "lat": 47.3769,
+      "lng": 8.5417,
+      "full_name": "苏黎世, 瑞士",
+      "id": 1767094090039,
+      "notes": ""
+    },
+    {
+      "name": "罗马",
+      "country": "意大利",
+      "lat": 41.9028,
+      "lng": 12.4964,
+      "full_name": "罗马, 意大利",
+      "id": 1767094099070,
+      "notes": ""
+    },
+    {
+      "name": "里斯本",
+      "country": "葡萄牙",
+      "lat": 38.7223,
+      "lng": -9.1393,
+      "full_name": "里斯本, 葡萄牙",
+      "id": 1767094116330,
+      "notes": ""
+    },
+    {
+      "name": "巴塞罗那",
+      "country": "西班牙",
+      "lat": 41.3851,
+      "lng": 2.1734,
+      "full_name": "巴塞罗那, 西班牙",
+      "id": 1767094119670,
+      "notes": ""
+    },
+    {
+      "name": "伦敦",
+      "country": "英国",
+      "lat": 51.5074,
+      "lng": -0.1278,
+      "full_name": "伦敦, 英国",
+      "id": 1767094124942,
+      "notes": ""
+    },
+    {
+      "name": "巴黎",
+      "country": "法国",
+      "lat": 48.8566,
+      "lng": 2.3522,
+      "full_name": "巴黎, 法国",
+      "id": 1767094131915,
+      "notes": ""
+    },
+    {
+      "name": "雷克雅未克",
+      "country": "冰岛",
+      "lat": 64.1466,
+      "lng": -21.9426,
+      "full_name": "雷克雅未克, 冰岛",
+      "id": 1767094139027,
+      "notes": ""
+    },
+    {
+      "name": "布宜诺斯艾利斯",
+      "country": "阿根廷",
+      "lat": -34.6037,
+      "lng": -58.3816,
+      "full_name": "布宜诺斯艾利斯, 阿根廷",
+      "id": 1767094168536,
+      "notes": ""
+    },
+    {
+      "name": "桂林",
+      "country": "中国",
+      "lat": 25.2345,
+      "lng": 110.18,
+      "full_name": "桂林, 广西, 中国",
+      "id": 1767103122472,
+      "notes": ""
+    },
+    {
+      "name": "拉萨",
+      "country": "中国",
+      "lat": 29.6525,
+      "lng": 91.1721,
+      "full_name": "拉萨, 西藏, 中国",
+      "id": 1767103131545,
+      "notes": ""
+    },
+    {
+      "name": "悉尼",
+      "country": "澳大利亚",
+      "lat": -33.8688,
+      "lng": 151.2093,
+      "full_name": "悉尼, 澳大利亚",
+      "id": 1767103163289,
+      "notes": ""
     }
   ],
   "calendarMarkers": [
