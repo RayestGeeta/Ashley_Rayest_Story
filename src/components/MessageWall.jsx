@@ -63,13 +63,13 @@ const MessageWall = ({ messages, onBringToFront, onClose }) => {
                         </div>
 
                         {/* Message Content */}
-                        <div className="p-4 flex flex-col gap-3">
-                            <p className="text-gray-700 text-sm font-serif leading-relaxed tracking-wide italic">
+                        <div className="p-2 md:p-4 flex flex-col gap-2 md:gap-3">
+                            <p className="text-gray-700 text-xs md:text-sm font-serif leading-relaxed tracking-wide italic line-clamp-4 md:line-clamp-none">
                                 "{msg.content}"
                             </p>
                             
                             <div className="flex justify-end">
-                                <span className={`text-[10px] uppercase tracking-widest font-medium ${isMe ? 'text-blue-400' : 'text-pink-400'}`}>
+                                <span className={`text-[8px] md:text-[10px] uppercase tracking-widest font-medium ${isMe ? 'text-blue-400' : 'text-pink-400'}`}>
                                     {isMe ? 'From Rayest' : 'From Ashley'}
                                 </span>
                             </div>

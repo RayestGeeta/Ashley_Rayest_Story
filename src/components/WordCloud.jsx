@@ -48,6 +48,10 @@ const WordCloud = ({ words }) => {
         // Find max value for normalization
         const maxVal = Math.max(...words.map(w => w.value));
 
+        // Detect Mobile
+        const isMobile = dimensions.width < 600;
+        const scaleFactor = isMobile ? 0.5 : 1.0;
+
         // Layout
         const layout = cloud()
             .size([dimensions.width, dimensions.height])
@@ -63,13 +67,14 @@ const WordCloud = ({ words }) => {
                 // Adjusted threshold to include words like '生活', '一起'
                 if (ratio > 0.09) {
                     // Top words: Make them significantly larger
-                    // Map ratio 0.09 -> 1.0 to size 60px -> 160px
-                    return 60 + (ratio * 100);
+                    // Map ratio 0.09 -> 1.0 to size 60px -> 160px (30px -> 80px on mobile)
+                    return (60 + (ratio * 100)) * scaleFactor;
                 } else {
                     // Other words: Gentle scaling
-                    // Map remaining to 16px -> 40px
+                    // Map remaining to 16px -> 40px (10px -> 24px on mobile)
                     const size = Math.pow(d.size, 0.4) * 6; 
-                    return Math.min(Math.max(size, 16), 40);
+                    const finalSize = Math.min(Math.max(size, 16), 40);
+                    return isMobile ? Math.max(finalSize * 0.6, 10) : finalSize;
                 }
             })
             .on('end', draw);

@@ -387,26 +387,24 @@ const LoveGallery = () => {
     const getPhotoStyle = (index, totalCount) => {
         const pos = heartPositions[index] || { x: 0, y: 0 };
         
+        const isMobile = typeof window !== 'undefined' ? window.innerWidth < 768 : false;
+
         // Map mathematical coordinates (-1.5 to 1.5) to CSS % (0 to 100)
         // Center is (50, 40)
-        const centerX = 45; // Shift left further to 45 (was 48)
-        const centerY = 50; // Moved down from 45 to 50 to prevent top clipping
+        const centerX = 45; 
+        const centerY = 50; 
         
-        // Increase scale to fill the board!
-        // Previous was 28, now we bump it up significantly
-        // Note: Mathematical heart roughly goes from y=-1 to y=1.5, x=-1.5 to 1.5
-        // We want 1.5 units to map to roughly 45% (to fill 90% height)
-        // So scale should be approx 45 / 1.5 = 30+
-        const scale = 42; // Increased to 42 for maximum size
+        // Use uniform scale for PC and Mobile to keep the layout structure identical
+        // PC scale is 42. Mobile scale should be the same RELATIVE to the container width.
+        // This will result in the same "spread" percentage wise.
+        const scale = 42; 
 
         const left = centerX + (pos.x * scale);
         const top = centerY + (pos.y * scale); 
 
         // Boundary Clamping
-        // Ensure left is between 5% and 95%
-        // Ensure top is between 5% and 95%
-        // This squishes the heart slightly if it hits the edge, but keeps photos inside
-        // Relaxed clamping to 2-98% to reduce "flat edge" look
+        // Relaxed clamping to 2-98%
+        // Mobile photos are smaller (w-10), so they can go closer to edge (98%) without issue.
         const clampedLeft = Math.max(2, Math.min(98, left));
         const clampedTop = Math.max(2, Math.min(98, top));
 
@@ -425,9 +423,9 @@ const LoveGallery = () => {
     };
 
     return (
-        <div className="min-h-screen bg-[var(--bg-primary)] text-white p-8 pb-20 overflow-y-auto">
+        <div className="min-h-screen bg-[var(--bg-primary)] text-white p-4 md:p-8 pb-20 overflow-y-auto">
             {/* Header Section */}
-            <div className="max-w-7xl mx-auto mb-12 text-center relative">
+            <div className="max-w-7xl mx-auto mb-8 md:mb-12 text-center relative">
                 <motion.div
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -438,7 +436,7 @@ const LoveGallery = () => {
                         value={title}
                         onChange={(e) => IS_EDIT_MODE && setTitle(e.target.value)}
                         readOnly={!IS_EDIT_MODE}
-                        className={`text-5xl md:text-7xl font-bold bg-transparent text-center outline-none border-b-2 ${IS_EDIT_MODE ? 'border-transparent hover:border-pink-500/30' : 'border-transparent'} transition-colors`}
+                        className={`text-3xl md:text-5xl lg:text-7xl font-bold bg-transparent text-center outline-none border-b-2 ${IS_EDIT_MODE ? 'border-transparent hover:border-pink-500/30' : 'border-transparent'} transition-colors`}
                         style={{ fontFamily: "'Dancing Script', cursive, sans-serif" }} 
                     />
                 </motion.div>
@@ -446,7 +444,7 @@ const LoveGallery = () => {
                 
                 {/* Controls - Always visible for View Toggle, but Upload/Slider hidden in Read-Only */}
                 <div className="mt-8 flex flex-col items-center gap-4">
-                    <div className="flex items-center gap-4">
+                    <div className="flex flex-wrap justify-center items-center gap-4">
                         {/* View Toggle (Always visible) */}
                         <div className="bg-white/10 p-1 rounded-full flex items-center">
                             <button 
@@ -634,7 +632,7 @@ const LoveGallery = () => {
                                         style={{ zIndex: index + 1 }} // Initial stack order
                                         onClick={() => setSelectedPhoto(photo)}
                                     >
-                                        <div className="bg-white p-1 pb-4 shadow-[1px_1px_4px_rgba(0,0,0,0.2)] w-20 md:w-24 transform transition-transform duration-300">
+                                        <div className="bg-white p-1 md:p-1 pb-3 md:pb-4 shadow-[1px_1px_4px_rgba(0,0,0,0.2)] w-16 xs:w-20 md:w-24 transform transition-transform duration-300">
                                             <div className="aspect-square overflow-hidden bg-gray-100 mb-0.5 border border-gray-200">
                                                 <img 
                                                     src={photo.thumbnail || photo.src} 
@@ -645,7 +643,7 @@ const LoveGallery = () => {
                                                 />
                                             </div>
                                             <div className="text-center px-0.5 overflow-hidden">
-                                                <p className="font-handwriting text-gray-800 text-[8px] font-bold truncate" style={{ fontFamily: "'Indie Flower', cursive" }}>
+                                                <p className="font-handwriting text-gray-800 text-[6px] xs:text-[7px] md:text-[8px] font-bold truncate" style={{ fontFamily: "'Indie Flower', cursive" }}>
                                                     {photo.caption}
                                                 </p>
                                             </div>
